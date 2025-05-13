@@ -10,9 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@phosphor-icons/react": "^2.1.7",
+    "autoprefixer": "^10.4.21",
+    "lucide-react": "^0.510.0",
+    "postcss": "^8.5.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "site": "file:"
+    "react-icons": "^5.5.0",
+    "react-router-dom": "^7.6.0",
+    "site": "file:",
+    "tailwindcss": "^3.4.17"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
