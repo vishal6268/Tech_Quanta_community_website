@@ -6,7 +6,8 @@ import Layout from "../Layout";
 import Home from "../pages/Home";
 import About from "../pages/About";
 import CommunityWork from "../pages/CommunityWork";
-import LeaderBoard from "../pages/LeaderBoard" // Optional 404 Page
+import LeaderBoard from "../pages/LeaderBoard";
+import NotFound from "../pages/NotFound"; // Optional 404 Page
 
 const router = createBrowserRouter([
   {
@@ -16,12 +17,12 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: "leaderboard", element: <LeaderBoard /> },
       { path: "about", element: <About /> },
-      { path: "CommunityWork", element: <CommunityWork /> },
+      { path: "community-work", element: <CommunityWork /> },
     ],
   },
   {
     path: "*",
-    // element: <NotFound />, // Optional fallback page
+    element: <NotFound />, // Optional fallback page
   },
 ]);
 

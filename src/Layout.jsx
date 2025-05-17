@@ -9,7 +9,7 @@ const Layout = () => {
   return (
     <div>
       <Navbar />
-      <main className="pt-[100px]">
+      <main className="">
         <Outlet /> {/* This renders the route's child */}
       </main>
       {/* <Footer /> */}

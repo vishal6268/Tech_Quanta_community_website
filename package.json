@@ -10,16 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-<<<<<<< HEAD
-    "@phosphor-icons/react": "^2.1.8",
-    "autoprefixer": "^10.4.21",
-    "framer-motion": "^12.12.1",
-=======
     "@phosphor-icons/react": "^2.1.7",
     "@tabler/icons-react": "^3.31.0",
     "autoprefixer": "^10.4.21",
     "clsx": "^2.1.1",
->>>>>>> 376adc2ebf89de719f9e9dd8d7074aee50572c8a
+    "framer-motion": "^12.12.1",
     "lucide-react": "^0.510.0",
     "motion": "^12.11.3",
     "postcss": "^8.5.2",

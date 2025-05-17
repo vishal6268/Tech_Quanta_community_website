@@ -1,11 +1,10 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { 
-  FaGithub, 
-  FaCodeBranch, 
-  FaBug, 
-  FaSearch, 
-  FaExternalLinkAlt 
+import {
+  FaGithub,
+  FaCodeBranch,
+  FaBug,
+  FaExternalLinkAlt
 } from "react-icons/fa";
 
 export default function LeaderBoard() {
@@ -25,7 +24,18 @@ export default function LeaderBoard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [imageIndex, setImageIndex] = useState(0);
 
-  const top50Users = leaderboardData.slice(0, 50);
+  const rotatingImages = [
+    "/SearchIMg1.gif",
+    "/SearchIMG2.gif",
+    "/SearchIMG3.gif",
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setImageIndex((prev) => (prev + 1) % rotatingImages.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   const searchedUser = useMemo(() => {
     if (!searchTerm.trim()) return null;
@@ -34,184 +44,109 @@ export default function LeaderBoard() {
     );
   }, [searchTerm]);
 
-  const rotatingImages = [
-    "/public/SearchIMg1.gif",
-    "/public/SearchIMG2.gif",
-    "/public/SearchIMG3.gif",
-  ];
-
-  useEffect(() => {
-    
-    const interval = setInterval(() => {
-      setImageIndex((prev) => (prev + 1) % rotatingImages.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <div className="min-h-screen w-full bg-transparent text-gray-100   p-8">
-      {/* Top row: left heading + right search + profile below search */}
-      <div className="max-w-full mx-auto mb-8">
-        <div className="flex flex-col md:flex-row  md:justify-between gap-6">
-          {/* Left heading */}
-          <h1 className="text-4xl font-extrabold tracking-wide select-none font-Exo 2">
-            Community Leaderboard
-          </h1>
+    <div className="relative  pt-[100px] min-h-screen w-full bg-transparent text-white p-8 ">
+      {/* Heading and Search */}
+      <div className="flex flex-col md:flex-row md:justify-between gap-6 items-center mb-10">
+        <h1 className="text-4xl font-extrabold tracking-wider select-none font-['Rajdhani']">Community Leaderboard</h1>
 
-          {/* Right search + profile */}
-          <div className="w-full max-w-md">
-            <div className="flex items-center gap-3 mt-6 md:mt-0 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 shadow-lg w-full md:w-[340px]">
-              <img
-                src={rotatingImages[imageIndex]}
-                alt="Error"
-                className="w-7 h-7 rounded-full object-contain"
-              />
-              <input
-                type="text"
-                placeholder="Search username (exact)..."
-                className="w-full pl-12 pr-4 py-4 rounded-full bg-transparent text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2ECC71] transition text-lg font-semibold"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value.trim())}
-              />
-            </div>
+        <div className="w-full max-w-md ">
+          <div className="flex items-center gap-8 bg-white/10 backdrop-blur-lg px-4 py-3 rounded-full border border-white/10 shadow-lg">
+            <img
+              src={rotatingImages[imageIndex]}
+              alt="Search icon"
+              className="w-7 h-7 rounded-full object-contain"
+            />
+            <input
+              type="text"
+              placeholder="Search username (exact)..."
+              className="w-full bg-transparent text-gray-200 placeholder-gray-400 focus:outline-none text-base font-semibold font-['Exo 2']"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
         </div>
       </div>
-       <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-lg p-6 m-6 min-h-[200px] flex flex-col items-center justify-center text-center">
-              {searchedUser ? (
-                <>
-                  <img
-                    src={searchedUser.avatar}
-                    alt={searchedUser.username}
-                    className="w-24 h-24 rounded-full border-4 border-[#2ECC71] mb-4 object-cover"
-                  />
-                  <h3 className="text-2xl font-bold text-green-400 mb-1">
-                    {searchedUser.username}
-                  </h3>
-                  <div className="flex gap-6 text-gray-300 mb-6 justify-center">
-                    <div className="flex items-center gap-2">
-                      <FaGithub size={24} className="text-yellow-400" />
-                      <span className="text-lg font-mono">{searchedUser.commits} Commits</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <FaCodeBranch size={24} className="text-cyan-400" />
-                      <span className="text-lg font-mono">{searchedUser.prs} PRs</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <FaBug size={24} className="text-pink-400" />
-                      <span className="text-lg font-mono">{searchedUser.issues} Issues</span>
-                    </div>
-                  </div>
-                  <a
-                    href={`https://github.com/${searchedUser.username}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-[#2ECC71] font-semibold hover:underline justify-center items-center"
-                    title="Visit GitHub Profile"
-                  >
-                    Visit Profile <FaExternalLinkAlt size={20} />
-                  </a>
-                </>
-              ) : searchTerm.length > 0 ? (
-                <p className="text-gray-400 text-lg italic select-none">
-                  No user found with username &quot;{searchTerm}&quot;.
-                </p>
-              ) : (
-                <p className="text-gray-400 text-lg italic select-none">
-                  Enter a username above to view profile details here.
-                </p>
-              )}
-            </div>
-            <br/>
 
-    <section className="max-w-7xl mx-auto bg-white/10 backdrop-blur-md rounded-2xl shadow-lg p-4 sm:p-8">
-  {/* Mobile Header (visible below sm) */}
-  <div className="grid grid-cols-[50px_60px_1fr] gap-4 text-xs font-semibold uppercase text-black px-4 py-3 border-b border-gray-600 select-none sticky top-0 bg-white backdrop-blur-sm z-10 sm:hidden">
-    <div className="text-center">Rank</div>
-    <div>Avatar</div>
-    <div>Username</div>
-  </div>
-
-  {/* Full Header (visible from sm and up) */}
-  <div className="hidden sm:grid grid-cols-[50px_60px_1fr_1fr_1fr_1fr] gap-4 text-sm font-semibold uppercase text-black px-4 py-3 border-b border-gray-600 select-none sticky top-0 bg-white backdrop-blur-sm z-10">
-    <div className="text-center">Rank</div>
-    <div>Avatar</div>
-    <div>Username</div>
-    <div className="flex items-center gap-1 justify-center">
-      <FaGithub size={16} />
-      Commits
-    </div>
-    <div className="flex items-center gap-1 justify-center">
-      <FaCodeBranch size={16} />
-      PRs
-    </div>
-    <div className="flex items-center gap-1 justify-center">
-      <FaBug size={16} />
-      Issues
-    </div>
-  </div>
-
-  {/* Leaderboard Body */}
-  <div className="overflow-y-auto max-h-[600px] mt-1 rounded-lg border border-gray-700 shadow-inner">
-    <AnimatePresence>
-      {top50Users.length === 0 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="p-8 text-center text-gray-400 select-none"
-        >
-          No contributors found.
-        </motion.div>
-      )}
-
-      {top50Users.map((user, i) => (
-        <motion.div
-          key={user.username}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.25, delay: i * 0.02 }}
-          className={`grid gap-4 items-center px-4 py-3 hover:bg-white/10 cursor-pointer ${
-            i < 3
-              ? "bg-gradient-to-r from-yellow-500/20 via-yellow-400/10 to-yellow-500/20 shadow-md"
-              : ""
-          } grid-cols-[50px_60px_1fr] sm:grid-cols-[50px_60px_1fr_1fr_1fr_1fr]`}
-        >
-          <div className="text-center font-bold text-lg text-yellow-400 select-none">
-            {i + 1}
-          </div>
-          <div>
+      {/* Search Result Display */}
+      <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-lg p-6 text-center mb-10">
+        {searchedUser ? (
+          <>
             <img
-              src={user.avatar}
-              alt={user.username}
-              className="w-12 h-12 rounded-full object-cover border border-gray-700"
+              src={searchedUser.avatar}
+              alt={searchedUser.username}
+              className="w-24 h-24 rounded-full border-4 border-green-400 mx-auto mb-4"
             />
-          </div>
-          <div className="font-semibold text-lg text-gray-100 truncate select-text">
-            {user.username}
-          </div>
+            <h2 className="text-2xl font-bold text-green-300">{searchedUser.username}</h2>
+            <div className="flex justify-center gap-6 text-gray-300 mt-4 mb-6">
+              <div className="flex items-center gap-2">
+                <FaGithub className="text-yellow-400" />
+                <span>{searchedUser.commits} Commits</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <FaCodeBranch className="text-cyan-400" />
+                <span>{searchedUser.prs} PRs</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <FaBug className="text-pink-400" />
+                <span>{searchedUser.issues} Issues</span>
+              </div>
+            </div>
+            <a
+              href={`https://github.com/${searchedUser.username}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-[#2ECC71] font-semibold hover:underline"
+            >
+              Visit Profile <FaExternalLinkAlt />
+            </a>
+          </>
+        ) : searchTerm ? (
+          <p className="text-gray-400 italic">No user found with username &quot;{searchTerm}&quot;.</p>
+        ) : (
+          <p className="text-gray-400 italic">Enter a username above to view profile.</p>
+        )}
+      </div>
 
-          {/* Hidden on mobile */}
-          <div className="hidden sm:flex items-center gap-2 justify-center text-green-300 font-mono font-semibold">
-            <FaGithub />
-            {user.commits}
-          </div>
-          <div className="hidden sm:flex items-center gap-2 justify-center text-cyan-300 font-mono font-semibold">
-            <FaCodeBranch />
-            {user.prs}
-          </div>
-          <div className="hidden sm:flex items-center gap-2 justify-center text-pink-300 font-mono font-semibold">
-            <FaBug />
-            {user.issues}
-          </div>
-        </motion.div>
-      ))}
-    </AnimatePresence>
-  </div>
-</section>
+      {/* Leaderboard Table */}
+      <div className="max-w-7xl mx-auto bg-white/10 backdrop-blur-md rounded-2xl shadow-lg p-4 sm:p-8">
+        {/* Headers */}
+        <div className="hidden sm:grid grid-cols-[50px_60px_1fr_1fr_1fr_1fr] text-sm font-bold uppercase text-black px-4 py-3 border-b border-gray-600 bg-white/30 backdrop-blur-sm rounded-t-md">
+          <div className="text-center">Rank</div>
+          <div>Avatar</div>
+          <div>Username</div>
+          <div className="flex items-center justify-center gap-1"><FaGithub size={16} /> Commits</div>
+          <div className="flex items-center justify-center gap-1"><FaCodeBranch size={16} /> PRs</div>
+          <div className="flex items-center justify-center gap-1"><FaBug size={16} /> Issues</div>
+        </div>
 
-
+        {/* Body */}
+        <div className="overflow-y-auto max-h-[600px]">
+          <AnimatePresence>
+            {leaderboardData.map((user, i) => (
+              <motion.div
+                key={user.username}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25, delay: i * 0.03 }}
+                className={`grid grid-cols-[50px_60px_1fr] sm:grid-cols-[50px_60px_1fr_1fr_1fr_1fr] items-center px-4 py-3 border-b border-gray-700 ${
+                  i < 3 ? "bg-yellow-500/10 font-semibold" : "hover:bg-white/5"
+                }`}
+              >
+                <div className="text-center text-yellow-300">{i + 1}</div>
+                <div>
+                  <img src={user.avatar} alt={user.username} className="w-10 h-10 rounded-full border border-gray-600 object-cover" />
+                </div>
+                <div className="truncate text-white">{user.username}</div>
+                <div className="hidden sm:block text-green-200 text-center font-mono">{user.commits}</div>
+                <div className="hidden sm:block text-cyan-200 text-center font-mono">{user.prs}</div>
+                <div className="hidden sm:block text-pink-200 text-center font-mono">{user.issues}</div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      </div>
     </div>
   );
 }
-    
