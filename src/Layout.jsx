@@ -2,14 +2,14 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "./components/NavBar/Navigation";
 // import Footer from "./components/Footer/Footer";
-import "./Layout.css"; // Import your CSS file for styling
+// import "./Layout.css"; // Import your CSS file for styling
 
 
 const Layout = () => {
   return (
-    <div className="layout">
+    <div>
       <Navbar />
-      <main>
+      <main className="pt-[100px]">
         <Outlet /> {/* This renders the route's child */}
       </main>
       {/* <Footer /> */}

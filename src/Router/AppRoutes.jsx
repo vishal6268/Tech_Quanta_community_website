@@ -5,7 +5,8 @@ import Layout from "../Layout";
 // Pages
 import Home from "../pages/Home";
 import About from "../pages/About";
-import CommunityWork from "../pages/CommunityWork"; // Optional 404 Page
+import CommunityWork from "../pages/CommunityWork";
+import LeaderBoard from "../pages/LeaderBoard" // Optional 404 Page
 
 const router = createBrowserRouter([
   {
@@ -13,7 +14,7 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { index: true, element: <Home /> },
-      // { path: "projects", element: <Projects /> },
+      { path: "leaderboard", element: <LeaderBoard /> },
       { path: "about", element: <About /> },
       { path: "CommunityWork", element: <CommunityWork /> },
     ],
