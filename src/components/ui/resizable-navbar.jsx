@@ -83,32 +83,41 @@ export const NavItems = ({
 }) => {
     const [hovered, setHovered] = useState(null);
 
-    return (
-        <motion.div
+return (
+  <motion.div
+    onMouseLeave={() => setHovered(null)}
+    className={cn(
+      "absolute inset-0 hidden flex-1 flex-row items-center justify-center space-x-2 text-sm font-medium text-zinc-600 transition duration-200 hover:text-zinc-800 lg:flex lg:space-x-2",
+      className
+    )}
+  >
+    {items.map((item, idx) => (
+      <a
+            onMouseEnter={() => setHovered(idx)}
             onMouseLeave={() => setHovered(null)}
-            className={cn(
-                "absolute inset-0 hidden flex-1 flex-row items-center justify-center space-x-2 text-sm font-medium text-zinc-600 transition duration-200 hover:text-zinc-800 lg:flex lg:space-x-2",
-                className
-            )}>
-            {items.map((item, idx) => (
-                <a
-                    onMouseEnter={() => setHovered(idx)}
-                    onClick={onItemClick}
-                    className="relative px-4 py-2 text-white hover:text-[#2ECC71] dark:hover:text-black"
-                    key={`link-${idx}`}
-                    href={item.link}>
-                    {hovered === idx && (
-                        <motion.div
-  layoutId="hovered"
-  className="absolute inset-0 h-full w-full rounded-full bg-white dark:bg-white  "
-/>
-
-                    )}
-                    <span className="relative z-20">{item.name}</span>
-                </a>
-            ))}
-        </motion.div>
-    );
+            onClick={onItemClick}
+            className="relative group px-4 py-2 text-white hover:text-black transition-colors duration-300 ease-in-out"
+            key={`link-${idx}`}
+            href={item.link}
+        >
+        <AnimatePresence mode="wait">
+            {hovered === idx && (
+            <motion.div
+                key="hovered-bg"
+                layoutId="hovered"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="absolute inset-0 rounded-full bg-white dark:bg-white pointer-events-none"
+            />
+            )}
+        </AnimatePresence>
+        <span className="relative z-10">{item.name}</span>
+        </a>
+    ))}
+  </motion.div>
+);
 };
 
 export const MobileNav = ({
