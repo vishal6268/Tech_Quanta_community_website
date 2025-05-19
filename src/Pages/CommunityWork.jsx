@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const CommunityWork = () => {
   return (
-    <section className="min-h-screen bg-[#121212] text-white pt-24 px-6 flex flex-col items-center justify-center font-[Poppins] text-center">
+    <section className="min-h-screen  text-white pt-24 px-6 flex flex-col items-center justify-center font-[Poppins] text-center">
       <Helmet>
         <title>Services | TechQuanta</title>
         <meta

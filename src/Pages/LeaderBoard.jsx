@@ -1,35 +1,22 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  FaGithub,
-  FaCodeBranch,
-  FaBug,
-  FaExternalLinkAlt
-} from "react-icons/fa";
+import { FaGithub, FaCodeBranch, FaBug } from "react-icons/fa";
+import { useGitHubLeaderboardData } from "../hooks/GraphQlQuery";
+
+const rotatingImages = [
+  "/SearchIMg1.gif",
+  "/SearchIMG2.gif",
+  "/SearchIMG3.gif",
+];
 
 export default function LeaderBoard() {
-  const leaderboardData = [
-    { username: "octocat", avatar: "https://github.com/octocat.png", commits: 120, prs: 15, issues: 8, score: 250 },
-    { username: "torvalds", avatar: "https://github.com/torvalds.png", commits: 110, prs: 18, issues: 6, score: 240 },
-    { username: "mojombo", avatar: "https://github.com/mojombo.png", commits: 105, prs: 10, issues: 12, score: 220 },
-    { username: "defunkt", avatar: "https://github.com/defunkt.png", commits: 98, prs: 8, issues: 15, score: 200 },
-    { username: "pjhyett", avatar: "https://github.com/pjhyett.png", commits: 90, prs: 9, issues: 7, score: 180 },
-    { username: "user6", avatar: "https://github.com/user6.png", commits: 80, prs: 7, issues: 9, score: 170 },
-    { username: "user7", avatar: "https://github.com/user7.png", commits: 78, prs: 6, issues: 5, score: 160 },
-    { username: "user8", avatar: "https://github.com/user8.png", commits: 70, prs: 4, issues: 11, score: 150 },
-    { username: "user9", avatar: "https://github.com/user9.png", commits: 68, prs: 3, issues: 8, score: 140 },
-    { username: "user10", avatar: "https://github.com/user10.png", commits: 65, prs: 5, issues: 6, score: 135 },
-  ];
-
+  const { userStats: leaderboardData, loading, error } = useGitHubLeaderboardData();
   const [searchTerm, setSearchTerm] = useState("");
   const [imageIndex, setImageIndex] = useState(0);
+  const [isSticky, setIsSticky] = useState(false);
+  const searchResultRef = useRef(null);
 
-  const rotatingImages = [
-    "/SearchIMg1.gif",
-    "/SearchIMG2.gif",
-    "/SearchIMG3.gif",
-  ];
-
+  // Rotate search icon every 4 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setImageIndex((prev) => (prev + 1) % rotatingImages.length);
@@ -37,20 +24,79 @@ export default function LeaderBoard() {
     return () => clearInterval(interval);
   }, []);
 
+  // Search for exact username match
   const searchedUser = useMemo(() => {
     if (!searchTerm.trim()) return null;
     return leaderboardData.find(
       (user) => user.username.toLowerCase() === searchTerm.toLowerCase()
     );
+  }, [searchTerm, leaderboardData]);
+
+  // Handle sticky bar on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!searchResultRef.current) return;
+      const rect = searchResultRef.current.getBoundingClientRect();
+      setIsSticky(rect.top <= 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [searchTerm]);
+function Loading() {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="flex flex-col items-center justify-center h-64 w-full"
+      style={{ minHeight: "16rem" }}
+    >
+      <svg
+        className="animate-spin -ml-1 mr-3 h-12 w-12 text-green-500 dark:text-green-400"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        aria-label="Loading spinner"
+        role="img"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        ></circle>
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+        ></path>
+      </svg>
+      <p
+        className="mt-4 font-semibold text-lg select-none"
+        style={{
+          color: "var(--color-accent, #2ECC71)",
+          userSelect: "none",
+        }}
+      >
+        Loading leaderboard...
+      </p>
+    </motion.div>
+  );
+}
+
+  if (loading) return <div className="text-black p-4 justify-center items-center"><Loading/></div>;
+  if (error) return <div className="text-red-500 p-4 justify-center items-center">{error}</div>;
 
   return (
-    <div className="relative  pt-[100px] min-h-screen w-full bg-transparent text-white p-8 ">
+    <div className="relative pt-[100px] min-h-screen w-full bg-transparent text-white p-8">
       {/* Heading and Search */}
       <div className="flex flex-col md:flex-row md:justify-between gap-6 items-center mb-10">
-        <h1 className="text-4xl font-extrabold tracking-wider select-none font-['Rajdhani'] text-[#2ECC71]">Community Leaderboard</h1>
+        <h1 className="text-4xl font-extrabold tracking-wider select-none font-['Rajdhani'] text-[#2ECC71]">
+          Community Leaderboard
+        </h1>
 
-        <div className="w-full max-w-md ">
+        <div className="w-full max-w-md">
           <div className="flex items-center gap-8 bg-white/10 backdrop-blur-lg px-4 py-3 rounded-full border border-white/10 shadow-lg">
             <img
               src={rotatingImages[imageIndex]}
@@ -69,84 +115,153 @@ export default function LeaderBoard() {
       </div>
 
       {/* Search Result Display */}
-      <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-lg p-6 text-center mb-10">
+      <motion.div
+        ref={searchResultRef}
+        layout
+        initial={false}
+        animate={{
+          position: isSticky ? "fixed" : "relative",
+          top: isSticky ? 0 : "auto",
+          left: isSticky ? 0 : "auto",
+          right: isSticky ? 0 : "auto",
+          margin: isSticky ? "0 auto" : "0",
+          padding: isSticky ? "6px 20px" : "24px",
+          backgroundColor: "rgba(255, 255, 255, 0.1)",
+          backdropFilter: "blur(10px)",
+          boxShadow: isSticky
+            ? "0 4px 10px rgba(46, 204, 113, 0.4)"
+            : "0 8px 30px rgba(255,255,255,0.15)",
+          borderRadius: isSticky ? "0 0 1rem 1rem" : "1.5rem",
+          zIndex: 999,
+          width: isSticky ? "100%" : "auto",
+          maxWidth: isSticky ? "100vw" : "auto",
+          display: "flex",
+          alignItems: "center",
+          gap: isSticky ? "1rem" : "0",
+          flexDirection: isSticky ? "row" : "column",
+          // subtle tilt effect on sticky for viewpoint change
+          rotateX: isSticky ? 5 : 0,
+          transition: "all 0.4s ease-in-out",
+        }}
+        className="shadow-lg text-center mb-10"
+      >
         {searchedUser ? (
           <>
-            <img
+            <motion.img
               src={searchedUser.avatar}
               alt={searchedUser.username}
-              className="w-24 h-24 rounded-full border-4 border-green-400 mx-auto mb-4"
+              layout
+              animate={{ width: isSticky ? 48 : 96, height: isSticky ? 48 : 96 }}
+              className={`rounded-full shadow-lg object-cover`}
             />
-            <h2 className="text-2xl font-bold text-green-300">{searchedUser.username}</h2>
-            <div className="flex justify-center gap-6 text-gray-300 mt-4 mb-6">
-              <div className="flex items-center gap-2">
-                <FaGithub className="text-yellow-400" />
-                <span>{searchedUser.commits} Commits</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <FaCodeBranch className="text-cyan-400" />
-                <span>{searchedUser.prs} PRs</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <FaBug className="text-pink-400" />
-                <span>{searchedUser.issues} Issues</span>
-              </div>
-            </div>
-            <a
-              href={`https://github.com/${searchedUser.username}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-[#2ECC71] font-semibold hover:underline"
+            <div
+              className={`${
+                isSticky ? "text-left" : "text-center"
+              } flex flex-col justify-center flex-1`}
             >
-              Visit Profile <FaExternalLinkAlt />
-            </a>
+              <motion.h2
+                layout
+                animate={{ fontSize: isSticky ? "1.25rem" : "2rem" }}
+                className="font-bold text-[#2ECC71]"
+              >
+                {searchedUser.username}
+              </motion.h2>
+              <motion.p
+                layout
+                animate={{ fontSize: isSticky ? "0.8rem" : "1rem" }}
+                className="text-gray-300"
+              >
+                Score: <span className="font-semibold">{searchedUser.score}</span>
+              </motion.p>
+            </div>
+
+            <motion.div
+              layout
+              animate={{ fontSize: isSticky ? "0.9rem" : "1.1rem" }}
+              className="flex gap-6 text-white"
+            >
+              <span title="Commits" className="flex items-center gap-1">
+                <FaCodeBranch /> {searchedUser.commits}
+              </span>
+              <span title="Pull Requests" className="flex items-center gap-1">
+                <FaGithub /> {searchedUser.pullRequests}
+              </span>
+              <span title="Issues" className="flex items-center gap-1">
+                <FaBug /> {searchedUser.issues}
+              </span>
+            </motion.div>
           </>
-        ) : searchTerm ? (
-          <p className="text-gray-400 italic">No user found with username &quot;{searchTerm}&quot;.</p>
         ) : (
-          <p className="text-gray-400 italic">Enter a username above to view profile.</p>
+          <p
+            className={`text-gray-400 font-light ${
+              isSticky ? "text-left pl-4" : "text-center"
+            }`}
+            style={{ fontSize: isSticky ? "0.9rem" : "1.125rem" }}
+          >
+            {searchTerm
+              ? "No user found with that exact username."
+              : "Search by exact GitHub username to view details here."}
+          </p>
         )}
-      </div>
+      </motion.div>
 
       {/* Leaderboard Table */}
-      <div className="max-w-7xl mx-auto bg-white/10 backdrop-blur-md rounded-2xl shadow-lg p-4 sm:p-8">
-        {/* Headers */}
-        <div className="hidden sm:grid grid-cols-[50px_60px_1fr_1fr_1fr_1fr] text-sm font-bold uppercase text-black px-4 py-3 border-b border-gray-600 bg-white/30 backdrop-blur-sm rounded-t-md">
-          <div className="text-center">Rank</div>
-          <div>Avatar</div>
-          <div>Username</div>
-          <div className="flex items-center justify-center gap-1"><FaGithub size={16} /> Commits</div>
-          <div className="flex items-center justify-center gap-1"><FaCodeBranch size={16} /> PRs</div>
-          <div className="flex items-center justify-center gap-1"><FaBug size={16} /> Issues</div>
-        </div>
-
-        {/* Body */}
-        <div className="overflow-y-auto max-h-[600px]">
-          <AnimatePresence>
-            {leaderboardData.map((user, i) => (
-              <motion.div
-                key={user.username}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25, delay: i * 0.03 }}
-                className={`grid grid-cols-[50px_60px_1fr] sm:grid-cols-[50px_60px_1fr_1fr_1fr_1fr] items-center px-4 py-3 border-b border-gray-700 ${
-                  i < 3 ? "bg-yellow-500/10 font-semibold" : "hover:bg-white/5"
-                }`}
-              >
-                <div className="text-center text-yellow-300">{i + 1}</div>
-                <div>
-                  <img src={user.avatar} alt={user.username} className="w-10 h-10 rounded-full border border-gray-600 object-cover" />
-                </div>
-                <div className="truncate text-white">{user.username}</div>
-                <div className="hidden sm:block text-green-200 text-center font-mono">{user.commits}</div>
-                <div className="hidden sm:block text-cyan-200 text-center font-mono">{user.prs}</div>
-                <div className="hidden sm:block text-pink-200 text-center font-mono">{user.issues}</div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
-      </div>
+      <motion.div
+        layout
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="overflow-x-auto rounded-2xl border border-white/20 shadow-lg bg-white/10 backdrop-blur-md"
+        style={{ paddingTop: isSticky ? "130px" : "0" }} // add padding-top to avoid content hidden behind sticky bar
+      >
+        <table className="w-full text-white text-left min-w-[600px]">
+          <thead>
+            <tr className="border-b border-white/30 bg-white/5">
+              <th className="py-3 px-4 w-[50px] text-center">#</th>
+              <th className="py-3 px-4">Username</th>
+              <th className="py-3 px-4">Score</th>
+              <th className="py-3 px-4">Commits</th>
+              <th className="py-3 px-4">Pull Requests</th>
+              <th className="py-3 px-4">Issues</th>
+            </tr>
+          </thead>
+          <tbody>
+            <AnimatePresence>
+              {leaderboardData.map((user, index) => (
+                <motion.tr
+                  key={user.username}
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3, delay: index * 0.03 }}
+                  className={`border-b border-white/20 cursor-pointer hover:bg-white/20 ${
+                    searchedUser?.username === user.username
+                      ? "bg-[#2ECC71]/30 font-semibold"
+                      : ""
+                  }`}
+                  onClick={() => setSearchTerm(user.username)}
+                >
+                  <td className="py-2 px-4 text-center">{index + 1}</td>
+                  <td className="py-2 px-4 flex items-center gap-3">
+                    <img
+                      src={user.avatar}
+                      alt={user.username}
+                      className="w-8 h-8 rounded-full"
+                    />
+                    {user.username}
+                  </td>
+                  <td className="py-2 px-4">{user.score}</td>
+                  <td className="py-2 px-4">{user.commits}</td>
+                  <td className="py-2 px-4">{user.pullRequests}</td>
+                  <td className="py-2 px-4">{user.issues}</td>
+                </motion.tr>
+              ))}
+            </AnimatePresence>
+          </tbody>
+        </table>
+      </motion.div>
     </div>
   );
 }
+

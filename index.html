@@ -9,6 +9,11 @@
 </head>
 
 <body>
+  <script>
+    // Simple theme detection (light/dark)
+    const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.body.style.backgroundColor = isDark ? '#121212' : '#121212';
+  </script>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>
