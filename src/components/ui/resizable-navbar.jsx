@@ -8,6 +8,7 @@ import {
 } from "motion/react";
 
 import React, { useRef, useState } from "react";
+import {NavLink} from "react-router-dom";
 import { cn } from './../../lib/utils';
 
 
@@ -92,13 +93,13 @@ return (
     )}
   >
     {items.map((item, idx) => (
-      <a
+      <NavLink
             onMouseEnter={() => setHovered(idx)}
             onMouseLeave={() => setHovered(null)}
             onClick={onItemClick}
             className="relative group px-4 py-2 text-white hover:text-black transition-colors duration-300 ease-in-out"
             key={`link-${idx}`}
-            href={item.link}
+            to={item.link}
         >
         <AnimatePresence mode="wait">
             {hovered === idx && (
@@ -114,7 +115,7 @@ return (
             )}
         </AnimatePresence>
         <span className="relative z-10">{item.name}</span>
-        </a>
+        </NavLink>
     ))}
   </motion.div>
 );
@@ -202,8 +203,8 @@ export const MobileNavToggle = ({
 
 export const NavbarLogo = () => {
     return (
-        <a
-            href="#"
+        <NavLink
+            to="/"
             className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black">
             <img
                 src="logo.jpg"
@@ -215,7 +216,7 @@ export const NavbarLogo = () => {
   Tech<span className="text-[1.4rem] text-blue-600 dark:text-blue-400">Quanta</span>
 </span>
 
-        </a>
+        </NavLink>
     );
 };
 

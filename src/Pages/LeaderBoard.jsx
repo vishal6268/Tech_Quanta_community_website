@@ -48,7 +48,7 @@ export default function LeaderBoard() {
     <div className="relative  pt-[100px] min-h-screen w-full bg-transparent text-white p-8 ">
       {/* Heading and Search */}
       <div className="flex flex-col md:flex-row md:justify-between gap-6 items-center mb-10">
-        <h1 className="text-4xl font-extrabold tracking-wider select-none font-['Rajdhani']">Community Leaderboard</h1>
+        <h1 className="text-4xl font-extrabold tracking-wider select-none font-['Rajdhani'] text-[#2ECC71]">Community Leaderboard</h1>
 
         <div className="w-full max-w-md ">
           <div className="flex items-center gap-8 bg-white/10 backdrop-blur-lg px-4 py-3 rounded-full border border-white/10 shadow-lg">

@@ -12,7 +12,7 @@ import {
   MobileNavMenu,
 } from "../ui/resizable-navbar";
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 function Header() {
   const location = useLocation();
@@ -30,7 +30,7 @@ function Header() {
       <Navbar className="max-w-7xl mx-auto px-4 text-[#2ECC71]">
         {/* Desktop Nav */}
         <NavBody>
-          <Link
+          <NavLink
             to="/"
             className="z-20 flex items-center space-x-2 px-2 py-1 text-lg font-semibold"
           >
@@ -42,7 +42,7 @@ function Header() {
               className="rounded-full shadow-md"
             />
             <span className="text-[0.6rem] text-white">Tech<span className="text-[1rem]">Quanta</span></span>
-          </Link>
+          </NavLink>
 
           <NavItems
             items={navItems.map((item) => ({
@@ -66,7 +66,7 @@ function Header() {
         <MobileNav>
           <MobileNavHeader>
             <NavbarLogo>
-              <Link to="/" className="flex items-center space-x-2">
+              <NavLink to="/" className="flex items-center space-x-2">
                 <img
                   src="/logo.jpg"
                   alt="logo"
@@ -75,7 +75,7 @@ function Header() {
                   className="rounded-full"
                 />
                 <span className="text-white font-['Exo 2']">TechQuanta</span>
-              </Link>
+              </NavLink>
             </NavbarLogo>
             <MobileNavToggle
               isOpen={isMobileMenuOpen}
@@ -88,7 +88,7 @@ function Header() {
             onClose={() => setIsMobileMenuOpen(false)}
           >
             {navItems.map((item, idx) => (
-              <Link
+              <NavLink
                 key={idx}
                 to={item.link}
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -99,7 +99,7 @@ function Header() {
                 }`}
               >
                 {item.name}
-              </Link>
+              </NavLink>
             ))}
 
             <div className="mt-6 flex flex-col gap-3 px-4 ">
