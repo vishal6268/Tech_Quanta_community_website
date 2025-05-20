@@ -2,13 +2,14 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { request, gql } from "graphql-request";
-
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbyfbBo7Rlt365zzvLwcFx-cl7ppgip4U5STPXd6rOqHQCa10ZIWqBG5_sLRCyceXXX0vA/exec";
 
 const GITHUB_API = "https://api.github.com/graphql";
-const GITHUB_TOKEN = "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";
+const GITHUB_TOKEN = import.meta.env.VITE_GITHUB_TOKEN;
 
-const headers = {
+// filepath: c:\Users\hp\OneDrive\Documents\CommunityWebsite\Tech_Quanta_community_website\src\hooks\GraphQlQuery.jsx
+
+const headers = { 
   Authorization: `Bearer ${GITHUB_TOKEN}`,
 };
 
