@@ -69,6 +69,10 @@ const GET_REPO_CONTRIBUTORS = gql`
   }
 `;
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function fetchGitHubStats(username) {
   try {
     const variables = { username };
@@ -148,7 +152,7 @@ async function fetchTechquantaContributors() {
   }
 }
 
-export function useGitHubLeaderboardData() {
+export  function useGitHubLeaderboardData() {
   const [allUserStats, setAllUserStats] = useState([]);
   const [displayedUserStats, setDisplayedUserStats] = useState([]);
   const [error, setError] = useState(null);
@@ -162,9 +166,12 @@ export function useGitHubLeaderboardData() {
         const res = await axios.get(SHEET_URL);
         const usernames = res.data?.data?.map(item => item.GitHub_Username).filter(Boolean) || [];
 
-        const statsPromises = usernames.map(username => fetchGitHubStats(username));
-        const results = await Promise.all(statsPromises);
-        const validStats = results.filter(Boolean);
+        const validStats = [];
+        for (const username of usernames) {
+          const stats = await fetchGitHubStats(username);
+          if (stats) validStats.push(stats);
+          await sleep(1000); // 1 second delay between each request to avoid rate limit
+        }
 
         setAllUserStats(validStats);
         setDisplayedUserStats(validStats);
@@ -179,37 +186,36 @@ export function useGitHubLeaderboardData() {
     fetchAll();
   }, []);
 
-const showActiveMembers = async () => {
-  setLoadingFilter(true);
-  setError(null);
+  const showActiveMembers = async () => {
+    setLoadingFilter(true);
+    setError(null);
 
-  try {
-    const userRepoCommitsMap = await fetchTechquantaContributors();
+    try {
+      const userRepoCommitsMap = await fetchTechquantaContributors();
 
-    const activeUsers = allUserStats
-      .filter(user => userRepoCommitsMap[user.username])
-      .map(user => {
-        const repoCommits = userRepoCommitsMap[user.username];
-        const techquantaCommitsCount = Object.values(repoCommits).reduce((a, b) => a + b, 0);
+      const activeUsers = allUserStats
+        .filter(user => userRepoCommitsMap[user.username])
+        .map(user => {
+          const repoCommits = userRepoCommitsMap[user.username];
+          const techquantaCommitsCount = Object.values(repoCommits).reduce((a, b) => a + b, 0);
 
-        return {
-          ...user,
-          commits: techquantaCommitsCount,  // <-- override total commits with TechQuanta-only commits
-          techquantaContributions: repoCommits,
-          techquantaCommits: techquantaCommitsCount,
-        };
-      });
+          return {
+            ...user,
+            commits: techquantaCommitsCount,  // override total commits with TechQuanta-only commits
+            techquantaContributions: repoCommits,
+            techquantaCommits: techquantaCommitsCount,
+          };
+        });
 
-    setDisplayedUserStats(activeUsers);
-    setFilterActive(true);
-  } catch (err) {
-    setError("Failed to fetch active members.");
-    console.error(err);
-  } finally {
-    setLoadingFilter(false);
-  }
-};
-
+      setDisplayedUserStats(activeUsers);
+      setFilterActive(true);
+    } catch (err) {
+      setError("Failed to fetch active members.");
+      console.error(err);
+    } finally {
+      setLoadingFilter(false);
+    }
+  };
 
   const showAllMembers = () => {
     setDisplayedUserStats(allUserStats);

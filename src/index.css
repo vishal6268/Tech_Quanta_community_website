@@ -5,34 +5,33 @@
 
 
 
-
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  background-color:#121212;
+  --background-color: #ffffff;
+  --background-color-dark: #111827;
+  --color-text-light: #111827;
+  --color-text-dark: #d1d5db;
+  --color-accent: #2ECC71;
+  scroll-behavior: smooth;
+  /* ... other variables */
+}
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  user-select: none !important;
-  -webkit-user-select: none !important; /* Safari */
-  -ms-user-select: none !important;
-  --color-accent: #2ECC71; /* your green */
-  --color-text-light: #111827; /* dark gray for light mode text */
-  --color-text-dark: #d1d5db; /* light gray for dark mode text */
+/* Use .dark class for manual dark mode override */
+.dark {
+  --background-color: var(--background-color-dark);
+  color: var(--color-text-dark);
+  background-color: var(--background-color-dark);
 }
 
 body {
-  margin:0;
-  padding:0;
+  background-color: var(--background-color);
   color: var(--color-text-light);
-  background-color: var(--background-color, #fff); /* your bg from html or tailwind */
 }
+
+/* When dark mode class is present, override */
+.dark body {
+  color: var(--color-text-dark);
+}
+
 
 @media (prefers-color-scheme: dark) {
   body {
