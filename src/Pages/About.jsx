@@ -1,7 +1,8 @@
-// src/pages/Home.jsx
+// src/pages/About.jsx
 import React from "react";
-import { Link } from "react-router-dom";
-import { Helmet } from 'react-helmet';
+import { Helmet } from "react-helmet";
+import AboutInfo from "../components/About/AboutInfo"; 
+import Contact from "../components/About/Contact";
 
 const About = () => {
   return (
@@ -13,14 +14,9 @@ const About = () => {
           content="Engage in ......"
         />
       </Helmet>
+      <AboutInfo />
+      <Contact />
       {/* Tagline */}
-      <p className="text-[#2ECC71] font-semibold tracking-wide text-sm md:text-base uppercase mb-2">
-
-        ## Temporary Template do need to change okay testing because of Navbar
-        Empowering Open Source Minds
-      </p>
-
-
     </section>
   );
 };

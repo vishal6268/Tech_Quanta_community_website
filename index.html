@@ -3,9 +3,26 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/logo.jpg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tech Quanta</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/logo.jpg" />
+
+  <!-- SEO Meta Tags -->
+  <title>Tech Quanta – Community for Open Source, Innovation & Learning</title>
+  <meta name="description" content="Tech Quanta is a vibrant online community that connects developers, researchers, and learners to explore open source, attend events, and access services like web development, graphic design, and online courses." />
+  <meta name="keywords" content="Tech Quanta, open source community, software development, online events, courses, seminars, web development, graphic design" />
+  <meta name="author" content="Tech Quanta Team" />
+
+  <!-- Optional: Open Graph Meta for Social Sharing -->
+  <meta property="og:title" content="Tech Quanta – Open Source & Innovation Community" />
+  <meta property="og:description" content="Join Tech Quanta, where developers and learners collaborate through open source, events, and creative services." />
+  <meta property="og:image" content="/logo.jpg" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://yourdomain.com" /> <!-- Replace with actual URL -->
+
+  <!-- Google Fonts: Rajdhani -->
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -14,6 +31,7 @@
     const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     document.body.style.backgroundColor = isDark ? '#121212' : '#121212';
   </script>
+
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>
