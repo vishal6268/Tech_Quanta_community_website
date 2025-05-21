@@ -4,7 +4,7 @@ import Layout from "../Layout";
 
 // Pages
 import Home from "../pages/Home";
-import About from "../Pages/About";
+import About from "../pages/About";
 import CommunityWork from "../pages/CommunityWork";
 import LeaderBoard from "../pages/LeaderBoard";
 import NotFound from "../pages/NotFound"; // Optional 404 Page

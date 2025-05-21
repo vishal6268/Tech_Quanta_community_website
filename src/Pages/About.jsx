@@ -11,17 +11,10 @@ const About = () => {
 
   return (
     <div
-      className={`min-h-screen transition-colors duration-300 ${
+      className={`min-h-screen transition-colors duration-300 mt-[100px] ${
         isDark ? "bg-transpare text-white" : "bg-white text-black"
       }`}
     >
-      <Helmet>
-        <title>About | TechQuanta</title>
-        <meta
-          name="description"
-          content="Learn more about TechQuanta and our mission to empower open source minds."
-        />
-      </Helmet>
 
       <AboutInfo />
       <Contact />

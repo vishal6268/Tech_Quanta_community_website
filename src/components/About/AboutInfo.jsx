@@ -5,7 +5,7 @@ import { ThemeContext } from "../../context/ThemeContext"; // Adjust path if nee
 
 const communityValues = [
   {
-    icon: <FiUsers className="text-green-400 text-5xl mb-3" />,
+    icon: <FiUsers className="text-green-400 text-5xl mb-3 " />,
     title: "Community Driven",
     description: "Connect with developers globally to share ideas and collaborate.",
   },
@@ -31,7 +31,7 @@ const AboutInfo = () => {
         isDark ? "bg-[#121212] text-white" : "bg-white text-black"
       }`}
     >
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center mt-10">
         {/* Image */}
         <motion.div
           initial={{ opacity: 0, x: -60 }}

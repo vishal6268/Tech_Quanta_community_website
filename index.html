@@ -2,25 +2,46 @@
 <html lang="en">
 
 <head>
+  <!-- Character Encoding -->
   <meta charset="UTF-8" />
+    <!-- ✅ Favicons -->
+  <link rel="icon" href="/logo.jpg" type="image/jpg" sizes="32x32" />
+  <link rel="shortcut icon" href="/logo.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <!-- Mobile Responsive Meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <!-- ✅ Tab title -->
+
+  <!-- Page Title -->
   <title>Tech Quanta</title>
 
-  <!-- ✅ SEO & tab preview description -->
-  <meta name="description" content="Tech Quanta - A powerful and modern platform for managing tech quizzes, leaderboards, and themes with smooth UI and responsive design.">
+  <!-- Meta Description for SEO and Social Sharing -->
+  <meta name="description" content="Tech Quanta is a powerful and modern platform for managing tech quizzes, leaderboards, and interactive themes with a smooth UI and responsive design. Join the future of tech competitions.">
 
-  <!-- ✅ Theme color for mobile browsers -->
+  <!-- Open Graph (OG) Tags -->
+  <meta property="og:title" content="Tech Quanta" />
+  <meta property="og:description" content="A modern platform for tech quizzes, leaderboards, and themes. Experience a sleek UI and futuristic design." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://techquanta.io" />
+  <meta property="og:image" content="https://techquanta.io/preview.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Tech Quanta" />
+  <meta name="twitter:description" content="Join Tech Quanta – the modern hub for tech quizzes, competitive leaderboards, and community-driven themes." />
+  <meta name="twitter:image" content="https://techquanta.io/preview.png" />
+
+  <!-- Theme Color for Chrome and Mobile -->
   <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 
-  <!-- ✅ Prevent theme flash before React loads -->
+  <!-- Prevent Flash of Unstyled Content (FOUC) on Theme Load -->
   <script>
     (function () {
-      const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      document.documentElement.classList.add(dark ? 'dark' : 'light');
-      document.body.style.backgroundColor = dark ? '#121212' : '#ffffff';
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.classList.add(prefersDark ? 'dark' : 'light');
+      document.body.style.backgroundColor = prefersDark ? '#121212' : '#ffffff';
     })();
   </script>
 </head>
