@@ -13,7 +13,7 @@ const fadeIn = (delay = 0) => ({
 
 const About = () => {
   return (
-    <section className="min-h-screen bg-gray-900 text-white pt-24 px-6 flex flex-col items-center justify-center font-[Poppins] text-center max-w-4xl mx-auto">
+    <section className="min-h-screen bg-gray-900 text-white pt-24 px-6 flex flex-col items-center justify-center font-[Rajdhani] text-center max-w-4xl mx-auto">
       <Helmet>
         <title>About | TechQuanta</title>
         <meta
