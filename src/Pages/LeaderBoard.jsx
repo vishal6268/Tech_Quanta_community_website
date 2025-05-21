@@ -1,18 +1,83 @@
-import React, { useState, useMemo, useEffect, useRef } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { FaGithub, FaCodeBranch, FaBug } from "react-icons/fa";
+import React, { useState, useMemo, useEffect, useRef, useContext } from "react";
+import { ThemeContext } from "../context/ThemeContext"; // Adjust path if needed
+// ...existing code...
+
+import { FiFilter } from "react-icons/fi";
+import { FaGithub,  FaBug } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
 import { useGitHubLeaderboardData } from "../hooks/GraphQlQuery";
 
-const rotatingImages = ["/SearchIMg1.gif", "/SearchIMG2.gif", "/SearchIMG3.gif"];
+const sortFunctions = {
+  scoreDesc: (a, b) => b.score - a.score,
+  scoreAsc: (a, b) => a.score - b.score,
+  alphaAZ: (a, b) => a.username.localeCompare(b.username),
+  alphaZA: (a, b) => b.username.localeCompare(a.username),
+};
 
-export default function LeaderBoard() {
-  const { userStats: leaderboardData = [], loading, error } = useGitHubLeaderboardData();
-  const [searchTerm, setSearchTerm] = useState("");
+const rotatingImages = [
+  "/SearchIMg1.gif",
+  "/SearchIMG2.gif",
+  "/SearchIMG3.gif",
+];
+
+const Loading = () => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    className="flex flex-col items-center justify-center h-64 w-full font-['Rajdhani']"
+  >
+    <svg
+      className="animate-spin h-12 w-12 text-green-500 dark:text-green-400"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+      />
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+      />
+    </svg>
+    <p className="mt-4 font-semibold text-lg select-none text-[#2ECC71]">
+      Loading leaderboard...
+    </p>
+  </motion.div>
+);
+export default function Leaderboard() {
+  const { theme } = useContext(ThemeContext);
+  const {
+    userStats,
+    loading,
+    error,
+    filterActive,
+    loadingFilter,
+    showActiveMembers,
+    showAllMembers,
+  } = useGitHubLeaderboardData();
+
+  const [search, setSearch] = useState("");
+  const [sortKey, setSortKey] = useState("scoreDesc");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [imageIndex, setImageIndex] = useState(0);
-  const [isSticky, setIsSticky] = useState(false);
+  const searchRef = useRef(null);
   const searchResultRef = useRef(null);
+  const [isSticky, setIsSticky] = useState(false);
 
-  // Rotate icon
+  // Debounce search input
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedSearch(search), 300);
+    return () => clearTimeout(handler);
+  }, [search]);
+
+  // Rotate search images/gifs
   useEffect(() => {
     const interval = setInterval(() => {
       setImageIndex((prev) => (prev + 1) % rotatingImages.length);
@@ -20,240 +85,281 @@ export default function LeaderBoard() {
     return () => clearInterval(interval);
   }, []);
 
-  // Sticky search scroll
+  // Sticky header on scroll
   useEffect(() => {
-    const handleScroll = () => {
-      if (!searchResultRef.current) return;
-      const rect = searchResultRef.current.getBoundingClientRect();
-      setIsSticky(rect.top <= 10);
+    const onScroll = () => {
+      if (!searchRef.current) return;
+      const top = searchRef.current.getBoundingClientRect().top;
+      setIsSticky(top <= 10);
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [searchTerm]);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [debouncedSearch]);
 
-  // Exact search
-  const searchedUser = useMemo(() => {
-    if (!searchTerm.trim()) return null;
-    return leaderboardData.find(
-      (user) => user.username.toLowerCase() === searchTerm.toLowerCase()
+  const isDark = theme === "dark";
+
+const themeClasses = {
+  bg: isDark ? "bg-[#121212]" : "bg-white",
+  text: isDark ? "text-white" : "text-gray-900",
+  secondaryText: isDark ? "text-gray-400" : "text-gray-600",
+  inputBg: isDark ? "bg-[#2a2a2a]" : "bg-gray-200",
+  inputText: isDark ? "text-white placeholder-gray-400" : "text-gray-900 placeholder-gray-600",
+  buttonBg: "bg-[#2ECC71]",
+  buttonHoverBg: "hover:bg-[#28b263]",
+  cardBg: isDark ? "bg-[#1e1e1e]" : "bg-white",
+  cardText: isDark ? "text-white" : "text-gray-900",
+  shadow: isDark
+    ? "shadow-[0_0_10px_rgba(46,204,113,0.3)]"
+    : "shadow-[0_2px_10px_rgba(0,0,0,0.1)]",
+};
+
+
+  const filteredSortedUsers = useMemo(() => {
+    if (!userStats || !Array.isArray(userStats)) return [];
+
+    let users = userStats;
+
+    if (debouncedSearch.trim()) {
+      users = users.filter((user) =>
+        user.username.toLowerCase().includes(debouncedSearch.trim().toLowerCase())
+      );
+    }
+
+    return users.sort(sortFunctions[sortKey]);
+  }, [userStats, debouncedSearch, sortKey]);
+
+  if (loading)
+    return (
+      <div className={`${themeClasses.bg} min-h-screen flex justify-center items-center`}>
+        <Loading />
+      </div>
     );
-  }, [searchTerm, leaderboardData]);
 
-  const Loading = () => (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="flex flex-col items-center justify-center h-64 w-full "
-    >
-      <svg
-        className="animate-spin h-12 w-12 text-green-500 dark:text-green-400"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-      </svg>
-      <p className="mt-4 font-semibold text-lg select-none text-[#2ECC71]">Loading leaderboard...</p>
-    </motion.div>
-  );
+  if (error)
+    return (
+      <div className="text-center mt-20 font-semibold text-red-500">{error}</div>
+    );
 
-  if (loading) return <div className="p-4 text-center"><Loading /></div>;
-  if (error) return <div className="p-4 text-red-500 text-center">{error}</div>;
+  const searchedUser = filteredSortedUsers[0] || null;
+  const searchTerm = debouncedSearch.trim();
 
   return (
-    <div className="relative pt-[100px] min-h-screen w-full bg-transparent text-white p-4 sm:p-8">
-      {/* Header & Search */}
-      <div className="flex flex-col md:flex-row md:justify-between gap-6 items-center mb-10">
-        <h1 className="text-3xl sm:text-4xl font-extrabold tracking-wider select-none font-['Rajdhani'] text-[#2ECC71]">
-          Community Leaderboard
-        </h1>
-        <div className="w-full max-w-md">
-          <div className="flex items-center gap-4 sm:gap-8 bg-white/10 backdrop-blur-lg px-4 py-3 rounded-full border border-white/10 shadow-lg">
-            <img
-              src={rotatingImages[imageIndex]}
-              alt="Search icon"
-              className="w-6 h-6 sm:w-7 sm:h-7 rounded-full object-contain"
-            />
-            <input
-              type="text"
-              placeholder="Search username (exact)..."
-              className="w-full bg-transparent text-gray-200 placeholder-gray-400 focus:outline-none text-sm sm:text-base font-semibold font-['Exo 2']"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-        </div>
-      </div>
+    <div className={`${themeClasses.bg} min-h-screen  mt-[150px]`}>
+      {/* Header & Search Input */}
+      <motion.div
+        ref={searchRef}
+        className={`max-w-7xl mx-auto flex flex-wrap items-center justify-center mb-6 gap-12
+          ${isSticky ? "top-0 left-0 right-0 z-50 px-5 py-3 shadow-lg bg-opacity-90 backdrop-blur-sm" : ""}
+          ${themeClasses.bg}`}
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 120 }}
+      >
+        <div className="relative flex  items-center justify-between w-full px-4 py-2">
+  <h1
+    className={`text-3xl font-extrabold ${themeClasses.text} flex items-center gap-2 font-['Rajdhani']`}
+    style={{ minWidth: 200 }}
+  >
+    Community Leaderboard
+  </h1>
 
-       {/* Sticky Search Result Display */}
+</div>
+<div className="relative text-gray-400 focus-within:text-[#2ECC71]">
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.img
+        key={imageIndex}
+        src={rotatingImages[imageIndex]}
+        alt="Rotating search"
+        className="absolute left-3 top-2 -translate-y-1/2 pointer-events-none w-6 h-6 rounded"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 10 }}
+        transition={{ duration: 0.3 }}
+      />
+    </AnimatePresence>
+    <input
+      type="text"
+      placeholder="Search users..."
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+      className={`pl-12 pr-4 py-2 rounded-full ${themeClasses.inputBg} ${themeClasses.inputText} focus:outline-none focus:ring-2 focus:ring-[#2ECC71] min-w-[180px] transition`}
+    />
+  </div>
+
+
+        <div className="flex items-center gap-3 flex-wrap justify-center">
+
+          <select
+            className={`px-3 py-2 rounded-full ${themeClasses.inputBg} ${themeClasses.inputText} focus:outline-none focus:ring-2 focus:ring-[#2ECC71] transition`}
+            value={sortKey}
+            onChange={(e) => setSortKey(e.target.value)}
+          >
+            <option value="scoreDesc">Filter</option>
+            <option value="scoreAsc">Score: Low → High</option>
+            <option value="alphaAZ">A → Z</option>
+            <option value="alphaZA">Z → A</option>
+          </select>
+
+          <button
+            disabled={!filterActive}
+            onClick={showAllMembers}
+            className={`flex items-center gap-1 px-4 py-2 rounded-full text-white ${themeClasses.buttonBg} ${themeClasses.buttonHoverBg} disabled:opacity-50 disabled:cursor-not-allowed`}
+          >
+            Show All
+          </button>
+
+          <button
+            disabled={loadingFilter}
+            onClick={showActiveMembers}
+            className={`flex items-center gap-1 px-4 py-2 rounded-full text-white ${themeClasses.buttonBg} ${themeClasses.buttonHoverBg} disabled:opacity-50 disabled:cursor-not-allowed`}
+          >
+             <FiFilter />
+          </button>
+        </div>
+      </motion.div>
+
+      {/* Search Result Sticky Card */}
       <motion.div
         ref={searchResultRef}
         layout
         animate={{
-          position: isSticky ? "fixed" : "relative",
-          top: isSticky ? 0 : "auto",
-          left: isSticky ? 0 : "auto",
-          right: isSticky ? 0 : "auto",
-          margin: isSticky ? "0 auto" : "0",
-          padding: isSticky ? "8px 20px" : "24px",
-          backgroundColor: "rgba(255, 255, 255, 0.1)",
-          backdropFilter: "blur(10px)",
-          boxShadow: isSticky
-            ? "0 -4px 10px rgba(46, 204, 112, 0.64)"
-            : "0 8px 30px rgba(255,255,255,0.15)",
-          borderRadius: isSticky ? "1rem 1rem 0 0" : "1.5rem",
-          zIndex: 999,
-          width: "100%",
-          maxWidth: "100vw",
-          display: "flex",
-          alignItems: "center",
-          gap: isSticky ? "1rem" : "0",
-          flexDirection: isSticky ? "row" : "column",
-          rotateX: isSticky ? 5 : 0,
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          margin: isSticky ? "0 auto" : "initial",
+          zIndex: isSticky ? 999 : "auto",
+          width: isSticky ? "100%" : "auto",
+          backgroundColor: isSticky
+            ? isDark
+              ? "#121212cc"
+              : "#ffffffcc"
+            : "transparent",
+          backdropFilter: isSticky ? "blur(6px)" : "none",
+          boxShadow: isSticky ? "0 2px 10px rgba(0,0,0,0.2)" : "none",
         }}
-        className="shadow-lg text-center mt-10"
+        className={`max-w-5xl mx-auto p-3 rounded-b-lg ${
+          isSticky ? "border-b border-gray-300 dark:border-gray-700" : ""
+        }`}
       >
-        {searchedUser ? (
-          <>
-            <motion.img
-              src={searchedUser.avatar}
-              alt={searchedUser.username}
-              animate={{ width: isSticky ? 48 : 96, height: isSticky ? 48 : 96 }}
-              className="rounded-full shadow-lg object-cover"
-            />
-            <div
-              className={`${
-                isSticky ? "text-left" : "text-center"
-              } flex flex-col justify-center flex-1`}
-            >
-              <motion.h2
-                layout
-                animate={{ fontSize: isSticky ? "1.25rem" : "2rem" }}
-                className="font-bold text-[#2ECC71]"
-              >
-                {searchedUser.username}
-              </motion.h2>
-              <motion.p
-                layout
-                animate={{ fontSize: isSticky ? "0.8rem" : "1rem" }}
-                className="text-gray-300"
-              >
-                Score: <span className="font-semibold">{searchedUser.score}</span>
-              </motion.p>
-            </div>
-            <motion.div
-              layout
-              animate={{ fontSize: isSticky ? "0.9rem" : "1.1rem" }}
-              className="hidden md:flex gap-6 text-white"
-            >
-              <span title="Commits" className="flex items-center gap-1">
-                <FaCodeBranch /> {searchedUser.commits}
-              </span>
-              <span title="Pull Requests" className="flex items-center gap-1">
-                <FaGithub /> {searchedUser.pullRequests}
-              </span>
-              <span title="Issues" className="flex items-center gap-1">
-                <FaBug /> {searchedUser.issues}
-              </span>
-            </motion.div>
-          </>
-        ) : (
-          <p
-            className={`text-gray-400 font-light ${
-              isSticky ? "text-left pl-4" : "text-center"
-            }`}
-            style={{ fontSize: isSticky ? "0.9rem" : "1.125rem" }}
+        {searchTerm && searchedUser ? (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className={`flex items-center gap-4 p-2 rounded-lg ${themeClasses.cardBg} ${themeClasses.shadow}`}
           >
-            {searchTerm
-              ? " "
-              : " "}
-          </p>
-        )}
+            <img
+              src={searchedUser.avatar}
+              alt={`${searchedUser.username} avatar`}
+              className="w-12 h-12 rounded-full border-2 border-[#2ECC71]"
+            />
+            <div>
+              <h2 className={`text-lg font-bold ${themeClasses.cardText}`}>
+                {searchedUser.username}
+              </h2>
+              <p className={`text-sm ${themeClasses.secondaryText}`}>
+                Score: {searchedUser.score} | Repos: {searchedUser.repositories} | Commits: {searchedUser.commits} | PRs: {searchedUser.pullRequests}
+              </p>
+            </div>
+          </motion.div>
+        ) : searchTerm ? (
+          <div className={`text-center p-3 ${themeClasses.secondaryText}`}>
+            No user found...
+          </div>
+        ) : null}
       </motion.div>
 
+    {/* Users List */}
+<div className="max-w-6xl mx-auto mt-[100px] grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+  {filteredSortedUsers.map((user, index) => {
+    const isTop5 = index < 5;
+    const isTop3 = index < 3;
 
-      {/* Responsive Leaderboard */}
+    return (
       <motion.div
-        layout
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="mt-10"
+        key={user.username}
+        className={`
+          p-4 rounded-xl transition-transform hover:scale-105
+          ${themeClasses.cardBg} ${themeClasses.shadow}
+          ${isTop5 ? "border-4 border-[#2ECC71] bg-gradient-to-r from-green-100/30 to-green-200/30" : ""}
+          ${!isTop5 ? "hover:shadow-lg" : ""}
+        `}
+        whileHover={{ scale: 1.05 }}
+        animate={isTop3 ? { scale: [1, 1.03, 1], boxShadow: ["0 0 10px rgba(46, 204, 112, 0.7)", "0 0 20px rgb(255, 255, 255)", "0 0 10px rgb(204, 191, 46)"] } : {}}
+        transition={isTop3 ? { duration: 2, repeat: Infinity, repeatType: "mirror" } : {}}
       >
-        {/* Desktop Table */}
-        <div className="hidden md:block overflow-x-auto rounded-2xl border border-white/20 shadow-lg bg-white/10 backdrop-blur-md">
-          <table className="w-full text-white text-left min-w-[700px]">
-            <thead>
-              <tr className="border-b border-white/30 bg-white/5">
-                <th className="py-3 px-4 w-[50px] text-center">#</th>
-                <th className="py-3 px-4">Username</th>
-                <th className="py-3 px-4">Score</th>
-                <th className="py-3 px-4">Commits</th>
-                <th className="py-3 px-4">Pull Requests</th>
-                <th className="py-3 px-4">Issues</th>
-              </tr>
-            </thead>
-            <tbody>
-              <AnimatePresence>
-                {leaderboardData.map((user, index) => (
-                  <motion.tr
-                    key={user.username}
-                    layout
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.3, delay: index * 0.03 }}
-                    className={`border-b border-white/20 hover:bg-white/20 ${
-                      searchedUser?.username === user.username ? "bg-[#2ecc7140]" : ""
-                    }`}
-                  >
-                    <td className="py-2 px-4 text-center">{index + 1}</td>
-                    <td className="py-2 px-4 flex items-center gap-3">
-                      <img src={user.avatar} alt={user.username} className="w-9 h-9 rounded-full object-cover" />
-                      {user.username}
-                    </td>
-                    <td className="py-2 px-4">{user.score}</td>
-                    <td className="py-2 px-4">{user.commits}</td>
-                    <td className="py-2 px-4">{user.pullRequests}</td>
-                    <td className="py-2 px-4">{user.issues}</td>
-                  </motion.tr>
-                ))}
-              </AnimatePresence>
-            </tbody>
-          </table>
-        </div>
+        {/* Rank Badge */}
+        {isTop5 && (
+          <div className="absolute -top-3 -right-3 bg-[#2ECC71] text-white font-bold rounded-full w-8 h-8 flex items-center justify-center shadow-lg select-none z-10">
+            #{index + 1}
+          </div>
+        )}
 
-        {/* Mobile Cards */}
-        <div className="md:hidden flex flex-col gap-4">
-          {leaderboardData.map((user, index) => (
-            <motion.div
-              key={user.username}
-              layout
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3, delay: index * 0.02 }}
-              className={`bg-white/10 border border-white/20 backdrop-blur-md p-4 rounded-xl shadow-md ${
-                searchedUser?.username === user.username ? "border-[#2ECC71]" : ""
+        <div className="flex items-center gap-4 mb-3">
+          <img
+            src={user.avatar}
+            alt={user.username}
+            className={`rounded-full border-2 border-[#2ECC71] transition-all ${
+              isTop5 ? "w-16 h-16" : "w-14 h-14"
+            }`}
+          />
+          <div>
+            <h3
+              className={`text-xl font-extrabold transition-colors ${
+                isTop5
+                  ? "bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-green-600"
+                  : themeClasses.cardText
               }`}
             >
-              <div className="flex items-center gap-4 mb-2">
-                <img src={user.avatar} alt={user.username} className="w-10 h-10 rounded-full object-cover" />
-                <div>
-                  <h3 className="font-bold text-[#2ECC71]">{user.username}</h3>
-                  <p className="text-sm text-gray-300">Score: {user.score}</p>
-                </div>
-              </div>
-              <div className="flex justify-between text-sm text-white">
-                <span><FaCodeBranch className="inline" /> {user.commits}</span>
-                <span><FaGithub className="inline" /> {user.pullRequests}</span>
-                <span><FaBug className="inline" /> {user.issues}</span>
-              </div>
-            </motion.div>
-          ))}
+              {user.username}
+            </h3>
+            <p className={`text-sm ${themeClasses.secondaryText}`}>
+              Score: {user.score}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex justify-around mt-2 text-[#2ECC71]">
+          <div className="flex items-center gap-1 text-sm">
+            <a
+              href={`https://github.com/${user.username}?tab=commits`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-gray-600 dark:text-gray-400 hover:text-[#2ECC71]"
+              aria-label="Commits"
+              title="Commits"
+            >
+              <FaGithub />
+            </a>
+            {user.commits}
+          </div>
+          <div className="flex items-center gap-1 text-sm">
+            <a
+              href={`https://github.com/pulls?q=is%3Apr+author%3A${user.username}`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-gray-600 dark:text-gray-400 hover:text-[#2ECC71]"
+              aria-label="Pull Requests"
+              title="Pull Requests"
+            >
+              <img
+                src="pricon.png"
+                alt="GitHub Pull Request"
+                style={{ width: "14px", height: "14px" }}
+              />
+            </a>
+            {user.pullRequests}
+          </div>
+          <div className="flex items-center gap-1 text-sm">
+            <FaBug /> {user.issues}
+          </div>
         </div>
       </motion.div>
+    );
+  })}
+</div>
+
     </div>
   );
 }

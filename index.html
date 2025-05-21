@@ -5,15 +5,28 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/logo.jpg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- ✅ Tab title -->
   <title>Tech Quanta</title>
+
+  <!-- ✅ SEO & tab preview description -->
+  <meta name="description" content="Tech Quanta - A powerful and modern platform for managing tech quizzes, leaderboards, and themes with smooth UI and responsive design.">
+
+  <!-- ✅ Theme color for mobile browsers -->
+  <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+
+  <!-- ✅ Prevent theme flash before React loads -->
+  <script>
+    (function () {
+      const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.classList.add(dark ? 'dark' : 'light');
+      document.body.style.backgroundColor = dark ? '#121212' : '#ffffff';
+    })();
+  </script>
 </head>
 
 <body>
-  <script>
-    // Simple theme detection (light/dark)
-    const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    document.body.style.backgroundColor = isDark ? '#121212' : '#121212';
-  </script>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>
