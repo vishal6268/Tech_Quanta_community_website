@@ -1,12 +1,24 @@
 // src/pages/About.jsx
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { ThemeContext } from "../context/ThemeContext";
 import AboutInfo from "../components/About/AboutInfo";
 import Contact from "../components/About/Contact";
-import { ThemeContext } from "../context/ThemeContext"; // Make sure this path is correct
+import Loading from "../components/ui/loader"; // Adjust path if different
 
 const About = () => {
   const { theme } = useContext(ThemeContext);
   const isDark = theme === "dark";
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate content loading (replace this with real checks if needed)
+    const handleContentReady = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500); // Simulates loading time
+
+    return () => clearTimeout(handleContentReady);
+  }, []);
 
   return (
     <div
@@ -14,14 +26,16 @@ const About = () => {
         isDark ? "bg-transpare text-white" : "bg-white text-black"
       }`}
     >
-
-      <AboutInfo />
-      <Contact />
+      {isLoading ? (
+        <Loading message="Running Quantum Scripts..." />
+      ) : (
+        <>
+          <AboutInfo />
+          <Contact />
+        </>
+      )}
     </div>
   );
 };
 
 export default About;
-
-
-

@@ -10,7 +10,7 @@ const SHEET_URL =
 const TOKEN_MAP = JSON.parse(import.meta.env.VITE_GITHUB_TOKENS || "{}");
 const TOKEN_KEYS = Object.keys(TOKEN_MAP);
 const SESSION_KEY = "github_leaderboard_data";
-const SESSION_TTL = 10 * 60 * 1000; // 10 minutes
+const SESSION_TTL = 10 * 60 * 2000; // 10 minutes
 
 // GraphQL Queries (keep as-is)
 const GET_USER_STATS = gql`

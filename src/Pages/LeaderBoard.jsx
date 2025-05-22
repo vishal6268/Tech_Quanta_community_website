@@ -4,6 +4,8 @@ import axios from "axios"; // Make sure axios is imported
 import { FaFilter } from "react-icons/fa";
 import { FaGithub, FaBug } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import Loading from "../components/ui/loader"; // adjust path as needed
+
 import { useGitHubLeaderboardData } from "../hooks/GraphQlQuery"; // Custom hook, make sure path is correct
 
 const sortFunctions = {
@@ -24,40 +26,9 @@ const rotatingImages = [
     { src: "/initiator.png", name: "Initiator" },
     { src: "/superstar.png", name: "Superstar" },
     { src: "/supporter.png", name: "Supporter" },
-  ];
+    { src: "/join.png", name: "Joining" },
+];
 
-// Loading Spinner Component
-const Loading = () => (
-  <motion.div
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    className="flex flex-col items-center justify-center h-64 w-full font-['Rajdhani']"
-  >
-    <svg
-      className="animate-spin h-12 w-12 text-green-500 dark:text-green-400"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-      />
-    </svg>
-    <p className="mt-4 font-semibold text-lg select-none text-white">
-      Loading leaderboard...
-    </p>
-  </motion.div>
-);
 
 export default function Leaderboard() {
   const { theme } = useContext(ThemeContext);
@@ -84,7 +55,7 @@ export default function Leaderboard() {
     const handler = setTimeout(() => setDebouncedSearch(search), 300);
     return () => clearTimeout(handler);
   }, [search]);
-
+  
   // Rotate search images/gifs every 4 seconds
   useEffect(() => {
     const interval = setInterval(() => {
@@ -151,7 +122,7 @@ export default function Leaderboard() {
   const searchTerm = debouncedSearch.trim();
 
   return (
-    <div className={`${themeClasses.bg} min-h-screen mt-[150px]`}>
+    <div className={`${themeClasses.bg} min-h-screen mt-[150px] `}>
       {/* Header & Search Input */}
       <motion.div
         ref={searchRef}
@@ -162,12 +133,12 @@ export default function Leaderboard() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 120 }}
       >
-        <div className="relative flex items-center justify-between w-full px-4 py-2">
+        <div className="relative flex items-center justify-center w-full px-4 py-2">
           <h1
-            className={`text-3xl font-extrabold ${themeClasses.text} flex items-center gap-2 font-['Rajdhani']`}
-            style={{ minWidth: 200 }}
+            className={`text-4xl  font-extrabold ${themeClasses.text} flex  items-center gap-2 font-mono`}
+            style={{ minWidth: 200 ,color:"#00BFFF"}}
           >
-            Community Leaderboard
+            The Arkenlist
           </h1>
         </div>
 
@@ -276,113 +247,125 @@ export default function Leaderboard() {
       </motion.div>
 
       {/* Users List */}
-      <div className="max-w-6xl mx-auto mt-[100px] grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+      <div className="max-w-6xl mx-auto mt-[100px] grid gap-4 sm:grid-cols-2 md:grid-cols-3 justify-center items-center ">
         {filteredSortedUsers.map((user, index) => {
           const isTop5 = index < 5;
           const isTop3 = index < 3;
+          const getBadgeIndexByScore = (score) => {
+  if (score >= 40000) return 0;
+  if (score >= 20000) return 1;
+  if (score >= 10000) return 2;
+  if (score >= 5000) return 3;
+  if (score >= 2500) return 4;
+  return 5; // Below 60
+};
 
           const showHighlight = sortKey === "scoreDesc"; // Highlight top users only for default sort
 
           return (
             <motion.div
-              key={user.username}
-              className={`
-                relative p-4 rounded-xl transition-transform hover:scale-105
-                ${themeClasses.cardBg} ${themeClasses.shadow}
-                ${showHighlight && isTop5 ? "border-4 border-[#2ECC71] bg-gradient-to-r from-green-100/30 to-green-200/30" : ""}
-                ${!isTop5 ? "hover:shadow-lg" : ""}
-              `}
-              whileHover={{ scale: 1.05 }}
-              animate={
-                showHighlight && isTop3
-                  ? {
-                      scale: [1, 1.03, 1],
-                      boxShadow: [
-                        "0 0 10px rgba(46, 204, 112, 0.7)",
-                        "0 0 20px rgb(255, 255, 255)",
-                        "0 0 10px rgb(204, 191, 46)",
-                      ],
-                    }
-                  : {}
-              }
-              transition={
-                showHighlight && isTop3
-                  ? { duration: 2, repeat: Infinity, repeatType: "mirror" }
-                  : {}
-              }
-            >
-              {/* Rank Badge */}
-              {showHighlight && isTop5 && (
-  <div className="absolute -top-3 -right-3 w-8 h-8 cursor-pointer select-none z-10">
+  key={user.username}
+  className={`
+    
+    relative w-full max-w-md min-h-[130px] px-5 py-12 rounded-3xl shadow-lg group font-space-grotesk text-center backdrop-blur-xl bg-gradient-to-br from-[#3a1c71]/60 via-[#d76d77]/80 to-[#ffaf7b]/80 border-2 border-pink-400/10 ring-1 ring-orange-300/20 transition-transform duration-300 hover:scale-[1.035] text-white text-sm
+
+    ${isTop3 ? "border-emerald-300/40 animate-border-glow" : ""}
+    ${isTop5 ? "ring-2 dark:ring-pink-400/30 ring-fuchsia-500/60 bg-gradient-to-br from-[#ff00cc] via-[#333399] to-[#000000] dark:from-[#1f0033] dark:via-[#660066] dark:to-[#000000]" : ""}
+  `}
+  whileHover={{ scale: 1.035 }}
+>
+
+  {/* Glowing Animated Background */}
+  <div className="absolute inset-0 z-0 opacity-[0.08] pointer-events-none">
     <img
-      src={badges[index].src}
-      alt={badges[index].name}
-      title={badges[index].name} // native tooltip on hover
-      className="w-8 h-8 rounded-full shadow-lg"
+      src="/runes.png"
+      alt=""
+      className="w-full h-full object-cover animate-pulse"
     />
+  </div>
+
+  {/* Top 3 Shimmer Beam */}
+  {isTop3 && (
+    <div className="absolute inset-0 z-0 pointer-events-none">
+      <div className="absolute inset-0 bg-gradient-to-br from-emerald-300/25 to-transparent blur-3xl animate-zoom-glow" />
+    </div>
+  )}
+
+  {/* Top 5 Badge */}
+  {showHighlight && (
+  <div className="absolute top-4 right-4 z-20 w-12 h-12 ">
+    <div className="relative w-12 h-12">
+      <img
+        src={badges[getBadgeIndexByScore(user.score)].src}
+        alt={badges[getBadgeIndexByScore(user.score)].name}
+        className="w-full h-full object-contain rounded-full "
+      />
+    </div>
   </div>
 )}
 
-              <div className="flex items-center gap-4 mb-3">
-                <img
-                  src={user.avatar}
-                  alt={user.username}
-                  className={`rounded-full border-2 border-white transition-all ${
-                    showHighlight && isTop5 ? "w-16 h-16" : "w-14 h-14"
-                  }`}
-                />
-                <div>
-                  <h3
-                    className={`text-xl font-extrabold transition-colors ${
-                      showHighlight && isTop5
-                        ? "bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-green-600"
-                        : themeClasses.cardText
-                    }`}
-                  >
-                    {user.username}
-                  </h3>
-                  <p className={`text-sm ${themeClasses.secondaryText}`}>
-                    Score: {user.score}
-                  </p>
-                </div>
-              </div>
 
-              <div className="flex justify-around mt-2 text-[#2ECC71]">
-                <div className="flex items-center gap-1 text-sm">
-                  <a
-                    href={`https://github.com/${user.username}?tab=commits`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-gray-600 dark:text-gray-400 hover:text-[#2ECC71]"
-                    aria-label="Commits"
-                    title="Commits"
-                  >
-                    <FaGithub />
-                  </a>
-                  {user.commits}
-                </div>
-                <div className="flex items-center gap-1 text-sm">
-                  <a
-                    href={`https://github.com/pulls?q=is%3Apr+author%3A${user.username}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-gray-600 dark:text-gray-400 hover:text-[#2ECC71]"
-                    aria-label="Pull Requests"
-                    title="Pull Requests"
-                  >
-                    <img
-                      src="pricon.png"
-                      alt="GitHub Pull Request"
-                      style={{ width: "14px", height: "14px" }}
-                    />
-                  </a>
-                  {user.pullRequests}
-                </div>
-                <div className="flex items-center gap-1 text-sm">
-                  <FaBug /> {user.issues}
-                </div>
-              </div>
-            </motion.div>
+  {/* Avatar & Username */}
+  <div className="flex items-center gap-4 mb-3 relative z-10">
+    <img
+      src={user.avatar}
+      alt={user.username}
+      className="w-16 h-16 rounded-full border-4 border-emerald-200 shadow-md"
+    />
+    <div>
+      <h3 className={`text-xl font-bold leading-snug tracking-tight
+        ${isTop5
+          ? "text-transparent bg-gradient-to-r from-emerald-300 via-lime-300 to-emerald-400 bg-clip-text"
+          : "text-emerald-100"}
+      `}>
+        {user.username}
+      </h3>
+      <p className="text-xs text-zinc-400 mt-0.5">
+        Score: <span className="text-emerald-300 font-semibold">{user.score}</span>
+      </p>
+    </div>
+  </div>
+
+  {/* Stats Row */}
+  <div className="flex justify-between items-center px-2 mt-1 z-10 relative text-emerald-300 text-sm">
+    <div className="flex items-center gap-1">
+      <a
+        href={`https://github.com/${user.username}?tab=commits`}
+        target="_blank"
+        rel="noreferrer"
+        title="Commits"
+        className="hover:text-emerald-400 transition"
+      >
+        <FaGithub />
+      </a>
+      {user.commits}
+    </div>
+    <div className="flex items-center gap-1">
+      <a
+        href={`https://github.com/pulls?q=is%3Apr+author%3A${user.username}`}
+        target="_blank"
+        rel="noreferrer"
+        title="Pull Requests"
+        className="hover:text-emerald-400 transition"
+      >
+        <img src="/pricon.png" alt="PR" className="w-4 h-4" />
+      </a>
+      {user.pullRequests}
+    </div>
+    <div className="flex items-center gap-1">
+      <FaBug />
+      {user.issues}
+    </div>
+  </div>
+
+  {/* Holographic Glow Layer */}
+  <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl">
+    <div className="absolute -inset-1 bg-gradient-to-br from-emerald-200/20 to-transparent blur-2xl group-hover:opacity-60 opacity-30 transition-all duration-500" />
+    <div className="absolute top-0 left-1/2 w-32 h-32 bg-emerald-300/15 rotate-45 blur-3xl animate-holo-shimmer" />
+  </div>
+</motion.div>
+
+
           );
         })}
       </div>

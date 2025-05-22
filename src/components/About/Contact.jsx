@@ -82,7 +82,7 @@ const ContactForm = () => {
 
   if (isSubmitted) {
     return (
-      <div className="text-center font-sans text-transparent bg-clip-text bg-gradient-to-r from-[#00BFFF] to-[#2ECC71] font-semibold text-xl min-h-screen flex items-center justify-center bg-[#121212]">
+      <div className="text-center font-sans text-transparent bg-clip-text bg-[#2ECC71] dark:bg-[#00BFFF] font-semibold text-xl min-h-screen flex items-center justify-center bg-[#121212]">
         Thank you! We'll be in touch soon.
       </div>
     );
