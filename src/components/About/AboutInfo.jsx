@@ -43,7 +43,7 @@ const AboutInfo = () => {
           <img
             src="/About.jpg"
             alt="Online Onword Logo"
-            className="w-[300px] h-auto rounded-xl shadow-2xl border border-[#2ECC71]"
+            className="w-[300px] h-auto rounded-xl shadow-2xl border border-[#00BFFF]"
           />
         </motion.div>
 
@@ -55,8 +55,8 @@ const AboutInfo = () => {
           viewport={{ once: true }}
           className="text-left"
         >
-          <h2 className="text-4xl font-bold text-[#2ECC71] mb-4">About</h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-[#2ECC71] to-[#27ae60] rounded-full mb-6"></div>
+          <h2 className="text-4xl font-bold text-[#00BFFF] mb-4">About</h2>
+          <div className="w-20 h-1 bg-gradient-to-r from-[#00BFFF] to-[#0034FF] rounded-full mb-6"></div>
 
           <h3 className={`text-lg mb-6 ${isDark ? "text-gray-400" : "text-gray-700"}`}>
             A community initiative empowering people to explore open source, stay motivated, and grow together.
