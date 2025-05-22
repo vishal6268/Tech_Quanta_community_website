@@ -1,34 +1,25 @@
 import React, { useEffect, useState, useRef } from 'react';
-
-const slides = [
-  {
-    title: 'Celestial Symphony',
-    description:
-      'Step into the universe of imagination where creativity, design, and animation collide.',
-    image:
-      'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80',
-  },
-  {
-    title: 'Quantum Leap',
-    description:
-      'Experience futuristic transitions wrapped in light, logic, and visual poetry.',
-    image:
-      'https://images.unsplash.com/photo-1549924231-f129b911e442?auto=format&fit=crop&w=1600&q=80',
-  },
-  {
-    title: 'Digital Nirvana',
-    description:
-      'Unlock motion magic with stunning visuals and intuitive storytelling, built with pure code.',
-    image:
-      'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=80',
-  },
-];
+import axios from 'axios';
 
 export default function SliderShowcase() {
+  const [slides, setSlides] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [animate, setAnimate] = useState(false);
   const timeoutRef = useRef(null);
   const delay = 7000;
+
+  const fetchSlides = async () => {
+    try {
+      const response = await axios.get(
+        'https://script.google.com/macros/s/AKfycbwVRv4cREwQw1NR0RzZbhOcUQ3MKzvOV4H1Gdv6TkYwbTdYKMBxRauVfu_hA6ACFBkaTw/exec'
+      );
+      if (Array.isArray(response.data)) {
+        setSlides(response.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch slide data:', error);
+    }
+  };
 
   const nextSlide = () => {
     setAnimate(false);
@@ -47,22 +38,33 @@ export default function SliderShowcase() {
   };
 
   useEffect(() => {
+    fetchSlides();
+  }, []);
+
+  useEffect(() => {
+    if (slides.length === 0) return;
     setAnimate(true);
     timeoutRef.current = setTimeout(nextSlide, delay);
     return () => clearTimeout(timeoutRef.current);
-  }, [currentIndex]);
+  }, [currentIndex, slides]);
+
+  if (slides.length === 0) {
+    return <div className="text-white p-10">Loading slides...</div>;
+  }
+
+  const current = slides[currentIndex];
 
   return (
     <div className="relative w-screen xl:w-full min-h-[70vh] font-[Rajdhani] overflow-hidden">
       {/* Background */}
       <div
         className={`absolute inset-0 bg-cover bg-center transition-all duration-[2000ms] ease-in-out scale-110 will-change-transform`}
-        style={{ backgroundImage: `url(${slides[currentIndex].image})`, zIndex: 0 }}
+        style={{ backgroundImage: `url(${current.image})`, zIndex: 0 }}
       >
         <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent" />
       </div>
 
-      {/* Caption Container */} 
+      {/* Caption Container */}
       <div className="relative z-10 flex items-center justify-start h-full px-6 sm:px-10 lg:px-20 py-24">
         <div
           className={`bg-white/10 backdrop-blur-md rounded-xl p-8 max-w-2xl transition-all duration-1000 ease-in-out ${
@@ -70,11 +72,21 @@ export default function SliderShowcase() {
           }`}
         >
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white drop-shadow-md leading-tight">
-            {slides[currentIndex].title}
+            {current.title}
           </h1>
           <p className="mt-6 text-lg sm:text-xl text-gray-200 leading-relaxed drop-shadow">
-            {slides[currentIndex].description}
+            {current.description}
           </p>
+          {current.link && (
+            <a
+              href={current.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block mt-6 px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-md shadow-lg transition"
+            >
+              Register Now
+            </a>
+          )}
         </div>
       </div>
 

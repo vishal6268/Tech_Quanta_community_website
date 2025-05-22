@@ -38,7 +38,7 @@ function Main() {
   if (isLoading) {
     return (
       <div
-        className={`fixed inset-0 flex flex-col items-center justify-center overflow-hidden z-[9999] font-space-grotesk text-center p-4
+        className={`fixed inset-0 flex flex-col items-center justify-center overflow-hidden z-[9999] font-['Rajdhani'] text-center p-4
           ${
             theme === "dark"
               ? "bg-[#121212] text-[#d1d5db]"
