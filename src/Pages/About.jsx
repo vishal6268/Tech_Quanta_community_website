@@ -1,6 +1,5 @@
 // src/pages/About.jsx
 import React, { useContext } from "react";
-import { Helmet } from "react-helmet";
 import AboutInfo from "../components/About/AboutInfo";
 import Contact from "../components/About/Contact";
 import { ThemeContext } from "../context/ThemeContext"; // Make sure this path is correct

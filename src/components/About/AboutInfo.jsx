@@ -1,21 +1,21 @@
 import React, { useContext } from "react";
 import { motion } from "framer-motion";
-import { FiUsers, FiCode, FiGlobe } from "react-icons/fi";
+import { FaUsers, FaCode, FaGlobe } from "react-icons/fa";
 import { ThemeContext } from "../../context/ThemeContext"; // Adjust path if needed
 
 const communityValues = [
   {
-    icon: <FiUsers className="text-green-400 text-5xl mb-3 " />,
+    icon: <FaUsers className="text-green-400 text-5xl mb-3 " />,
     title: "Community Driven",
     description: "Connect with developers globally to share ideas and collaborate.",
   },
   {
-    icon: <FiCode className="text-teal-400 text-5xl mb-3" />,
+    icon: <FaCode className="text-teal-400 text-5xl mb-3" />,
     title: "Open Source Projects",
     description: "Build and contribute to meaningful projects that power the future.",
   },
   {
-    icon: <FiGlobe className="text-green-400 text-5xl mb-3" />,
+    icon: <FaGlobe className="text-green-400 text-5xl mb-3" />,
     title: "Global Impact",
     description: "Empower developers worldwide and foster technology for good.",
   },

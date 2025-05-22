@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef, useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext"; // Adjust path if needed
 import axios from "axios"; // Make sure axios is imported
-import { FiFilter } from "react-icons/fi";
+import { FaFilter } from "react-icons/fa";
 import { FaGithub, FaBug } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGitHubLeaderboardData } from "../hooks/GraphQlQuery"; // Custom hook, make sure path is correct
@@ -218,7 +218,7 @@ export default function Leaderboard() {
             onClick={showActiveMembers}
             className={`flex items-center gap-1 px-4 py-2 rounded-full text-white ${themeClasses.buttonBg} ${themeClasses.buttonHoverBg} disabled:opacity-50 disabled:cursor-not-allowed`}
           >
-            <FiFilter />
+            <FaFilter />
           </button>
         </div>
       </motion.div>

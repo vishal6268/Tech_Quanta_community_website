@@ -20,9 +20,9 @@ function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
-    { name: "Community Work", link: "/community-work" },
-    { name: "LeaderBoard", link: "/leaderboard" },
-    { name: "About", link: "/about" },
+    { name: "Community Work", link: "community-work" },
+    { name: "LeaderBoard", link: "leaderboard" },
+    { name: "About", link: "about" },
   ];
 
   return (

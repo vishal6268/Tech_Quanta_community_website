@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 
-const EMAIL_ACCES_KEY = import.meta.env.VITE_EMAIL_ACCESS_KEY;
+const EMAIL_ACCESS_KEY = import.meta.env.VITE_EMAIL_ACCESS_KEY;
 
 const Loading = () => (
   <motion.div
@@ -58,7 +58,7 @@ const ContactForm = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          access_key: EMAIL_ACCES_KEY,
+          access_key: EMAIL_ACCESS_KEY,
           ...formData,
         }),
       });
@@ -114,9 +114,7 @@ const ContactForm = () => {
     <div className="min-h-[500px] flex items-center justify-center px-4">
       <form
         onSubmit={handleFinalSubmit}
-        className="group bg-[#121212] backdrop-blur w-full max-w-md p-8 space-y-8 rounded-xl border-none shadow-lg transition-colors duration-300
-          hover:border-[#2ECC71]/70
-          "
+        className="group bg-[#121212] backdrop-blur w-full max-w-md p-8 space-y-8 rounded-xl border-none shadow-lg transition-colors duration-300 hover:border-[#2ECC71]/70"
       >
         <h2 className="text-center text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#00BFFF] to-[#8E44AD] group-hover:from-[#2ECC71] group-hover:to-[#27AE60] font-sans transition-colors duration-300">
           Contact Us
@@ -134,7 +132,6 @@ const ContactForm = () => {
           </a>
         </p>
 
-        {/* Step 1 */}
         {step === 1 && (
           <div className="relative w-full h-16 bg-black border border-transparent bg-gradient-to-br from-[#00BFFF]/20 to-[#8E44AD]/20 rounded-md overflow-hidden transition-colors duration-300 group-hover:from-[#2ECC71]/20 group-hover:to-[#27AE60]/20">
             <input
@@ -166,7 +163,6 @@ const ContactForm = () => {
           </div>
         )}
 
-        {/* Step 2 */}
         {step === 2 && (
           <div className="relative w-full h-16 bg-black border border-transparent bg-gradient-to-br from-[#00BFFF]/20 to-[#8E44AD]/20 rounded-md overflow-hidden transition-colors duration-300 group-hover:from-[#2ECC71]/20 group-hover:to-[#27AE60]/20">
             <input
@@ -198,7 +194,6 @@ const ContactForm = () => {
           </div>
         )}
 
-        {/* Step 3 */}
         {step === 3 && (
           <div className="space-y-6">
             <div className="relative h-40 bg-black border border-transparent bg-gradient-to-br from-[#00BFFF]/20 to-[#8E44AD]/20 rounded-md overflow-hidden transition-colors duration-300 group-hover:from-[#2ECC71]/20 group-hover:to-[#27AE60]/20">
