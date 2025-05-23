@@ -1,5 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef, useContext } from "react";
-import axios from "axios"; // Make sure axios is imported
+import React, { useState, useMemo, useEffect, useRef} from "react";
 import { FaFilter } from "react-icons/fa";
 import { FaGithub, FaBug } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
@@ -47,32 +46,42 @@ export default function Leaderboard() {
   const searchRef = useRef(null);
   const searchResultRef = useRef(null);
   const [isSticky, setIsSticky] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
-  // Debounce search input
-  useEffect(() => {
-    const handler = setTimeout(() => setDebouncedSearch(search), 300);
-    return () => clearTimeout(handler);
-  }, [search]);
-  
-  // Rotate search images/gifs every 4 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setImageIndex((prev) => (prev + 1) % rotatingImages.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
+  const openModal = () => {
+    setIsOpen(true);
+    setIsImageLoaded(false); // reset for next open
+  };
 
-  // Sticky header on scroll
+    const closeModal = () => setIsOpen(false);
   useEffect(() => {
-    const onScroll = () => {
-      if (!searchRef.current) return;
-      const top = searchRef.current.getBoundingClientRect().top;
-      setIsSticky(top <= 10);
-    };
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [debouncedSearch]);
+  // --- Debounce Search ---
+  const debounceTimeout = setTimeout(() => {
+    setDebouncedSearch(search);
+  }, 300);
 
+  // --- Rotate Search Images ---
+  const imageRotationInterval = setInterval(() => {
+    setImageIndex((prev) => (prev + 1) % rotatingImages.length);
+  }, 4000);
+
+  // --- Sticky Header on Scroll ---
+  const onScroll = () => {
+    if (!searchRef.current) return;
+    const top = searchRef.current.getBoundingClientRect().top;
+    setIsSticky(top <= 10);
+  };
+
+  window.addEventListener("scroll", onScroll);
+
+  // Cleanup
+  return () => {
+    clearTimeout(debounceTimeout);
+    clearInterval(imageRotationInterval);
+    window.removeEventListener("scroll", onScroll);
+  };
+}, [search, rotatingImages.length, debouncedSearch]);
 
   const filteredSortedUsers = useMemo(() => {
     if (!userStats || !Array.isArray(userStats)) return [];
@@ -209,7 +218,7 @@ if (error)
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="flex  items-center gap-6 justify-center items-center p-2 rounded-lg bg-white dark:bg-[#1f1f1f]  dark:shadow-lg"
+      className="flex  items-center  gap-6 justify-center items-center p-2 rounded-lg bg-white dark:bg-[#1f1f1f]  dark:shadow-lg"
     >
       <img
         src={searchedUser.avatar}
@@ -359,6 +368,49 @@ if (error)
       </motion.div>
     );
   })}
+   
+</div>
+<div className="absolute -right-0 pb-10">
+  <button
+        onClick={openModal}
+        className="px-2 py-3 bg-transparent border-none text-black dark:text-white hover:text-[#00BFFF] dark:hover:text-[#2ECC71] font-semibold rounded-lg  transition"
+      >
+        View Scoring Criteria?
+      </button>
+
+      {isOpen && (
+        <div
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50"
+      onClick={closeModal}
+    >
+          <div
+            className="bg-white rounded-xl shadow-xl p-6 relative max-w-lg w-full"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-2xl font-bold mb-4 text-center text-purple-700">Scoring Criteria</h2>
+
+            {!isImageLoaded && (
+              <div className="flex justify-center items-center h-64">
+                <div className="w-10 h-10 border-4 border-purple-700 border-dashed rounded-full animate-spin"></div>
+              </div>
+            )}
+
+            <img
+              src="/ScoringCalculation.jpg"
+              alt="Scoring Criteria"
+              className={`rounded-lg w-full ${isImageLoaded ? "block" : "hidden"}`}
+              onLoad={() => setIsImageLoaded(true)}
+            />
+
+            <button
+              onClick={closeModal}
+              className="absolute top-3 right-3 text-gray-500 hover:text-red-600 text-xl font-bold"
+            >
+              &times;
+            </button>
+          </div>
+        </div>
+      )}
 </div>
 </div>
   );
