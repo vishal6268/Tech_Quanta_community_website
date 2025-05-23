@@ -1,17 +1,13 @@
 // src/pages/About.jsx
-import React, { useContext, useEffect, useState } from "react";
-import { ThemeContext } from "../context/ThemeContext";
+import React, { useEffect, useState } from "react";
 import UpcomingEvents from "../components/CommunityWork/UpcommingEvents";
 import Loading from "../components/ui/loader"; // Adjust path if different
 
 const About = () => {
-  const { theme } = useContext(ThemeContext);
-  const isDark = theme === "dark";
-
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate content loading (replace this with real checks if needed)
+    // Simulate content loading (replace with real checks if needed)
     const handleContentReady = setTimeout(() => {
       setIsLoading(false);
     }, 1500); // Simulates loading time
@@ -21,16 +17,12 @@ const About = () => {
 
   return (
     <div
-      className={`min-h-screen transition-colors duration-300 mt-[100px] ${
-        isDark ? "bg-transpare text-white" : "bg-white text-black"
-      }`}
+      className="min-h-screen transition-colors duration-300 mt-[100px] bg-white text-black dark:bg-transparent dark:text-white"
     >
       {isLoading ? (
         <Loading message="Running Quantum Scripts..." />
       ) : (
-        <>
-          <UpcomingEvents />
-        </>
+        <UpcomingEvents />
       )}
     </div>
   );

@@ -1,14 +1,10 @@
 // src/pages/About.jsx
-import React, { useContext, useEffect, useState } from "react";
-import { ThemeContext } from "../context/ThemeContext";
+import React, { useEffect, useState } from "react";
 import AboutInfo from "../components/About/AboutInfo";
 import Contact from "../components/About/Contact";
 import Loading from "../components/ui/loader"; // Adjust path if different
 
 const About = () => {
-  const { theme } = useContext(ThemeContext);
-  const isDark = theme === "dark";
-
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -21,11 +17,7 @@ const About = () => {
   }, []);
 
   return (
-    <div
-      className={`min-h-screen transition-colors duration-300 mt-[100px] ${
-        isDark ? "bg-transpare text-white" : "bg-white text-black"
-      }`}
-    >
+    <div className="min-h-screen transition-colors duration-300 mt-[100px] bg-white text-black dark:bg-transparent dark:text-white">
       {isLoading ? (
         <Loading message="Running Quantum Scripts..." />
       ) : (
