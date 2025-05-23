@@ -13,9 +13,8 @@ export default function SliderShowcase() {
   useEffect(() => {
     const fetchSlides = async () => {
   try {
-    const response = await axios.get(
-      'https://script.google.com/macros/s/AKfycbyrf82D6QQvQADaR2VePsiMsb_Y-nJwmqznX16y4iLHjLOyBUkdGEsGUzVbv-iU5ffcqg/exec'
-    );
+    const response = await axios.get(import.meta.env.VITE_GOOGLE_MACRO_API);
+
 
     if (response.data && Array.isArray(response.data.events)) {
       const mappedSlides = response.data.events.map(event => ({

@@ -4,8 +4,7 @@ import { request, gql } from "graphql-request";
 import { setWithExpiry, getWithExpiry } from "../utils/storageWithExpiry";
 
 // Config
-const SHEET_URL =
-  "https://script.google.com/macros/s/AKfycbyfbBo7Rlt365zzvLwcFx-cl7ppgip4U5STPXd6rOqHQCa10ZIWqBG5_sLRCyceXXX0vA/exec";
+const SHEET_URL =import.meta.env.VITE_GOOGLE_MACRO_API_USERNAME;
 
 const TOKEN_MAP = JSON.parse(import.meta.env.VITE_GITHUB_TOKENS || "{}");
 const TOKEN_KEYS = Object.keys(TOKEN_MAP);
