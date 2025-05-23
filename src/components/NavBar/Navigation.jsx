@@ -43,21 +43,16 @@ function Header() {
       <Navbar className="max-w-7xl mx-auto px-4 text-[#2ECC71]">
         {/* Desktop Nav */}
         <NavBody>
-         <NavLink
-        to="/"
-        className="z-20 flex items-center space-x-2 px-2 py-1 text-lg font-semibold"
-      >
-        <img
-          src={isDark ? "/lightlogo.png" : "/darklogo.png"}
-          alt="TechQuanta Logo"
-          width={44}
-          height={44}
-          className=""
-        />
-        <span className="text-[0.6rem] text-black dark:text-white">
-          Tech<span className="text-[1rem]">Quanta</span>
-        </span>
-      </NavLink>
+       
+          <NavLink
+            to="/"
+            className="z-20 flex items-center space-x-2 px-2 py-1 text-lg font-semibold"
+          >
+            <NavbarLogo/>
+            <span className="text-[0.6rem] text-black dark:text-white select-none">
+              Tech<span className="text-[1rem]">Quanta</span>
+            </span>
+          </NavLink>
 
           <NavItems
             items={navItems.map((item) => ({

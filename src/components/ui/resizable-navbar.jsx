@@ -224,26 +224,27 @@ export const NavbarLogo = () => {
     return (
         <NavLink
             to="/"
-            className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black">
+            className="relative z-20  flex items-center space-x-2  py-1 text-sm font-normal text-black">
+            
+            {/* Dark logo for dark mode */}
             <img
                 src="/lightlogo.png"
-                alt=""
+                alt="Dark Logo"
                 width={30}
                 height={30}
                 className="hidden dark:block" />
+
+            {/* Light logo for light mode */}
             <img
                 src="/darklogo.png"
-                alt=""
+                alt="Light Logo"
                 width={30}
                 height={30}
                 className="block dark:hidden" />
-            <span className="text-[1rem] text-white dark:text-white">
-  Tech<span className="text-[1.4rem] text-blue-600 dark:text-blue-400">Quanta</span>
-</span>
-
         </NavLink>
     );
 };
+
 
 export const NavbarButton = ({
     href,
