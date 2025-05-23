@@ -113,7 +113,7 @@ if (error)
       <motion.div
   ref={searchRef}
   className={`max-w-7xl mx-auto flex flex-wrap items-center justify-center mb-6 gap-12
-    ${isSticky ? "top-0 left-0 right-0 z-50 px-5 py-3 shadow-lg bg-opacity-90 backdrop-blur-sm" : ""}
+    ${isSticky ? "top-0 left-0 right-0 z-50 px-5 py-3  bg-opacity-90 backdrop-blur-sm" : ""}
     bg-white dark:bg-transparent`}
   initial={{ y: -50, opacity: 0 }}
   animate={{ y: 0, opacity: 1 }}
@@ -121,8 +121,8 @@ if (error)
 >
   <div className="relative flex items-center justify-center w-full px-4 py-2">
     <h1
-      className="text-4xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2 font-mono"
-      style={{ minWidth: 200, color: "white" }}
+      className="text-4xl font-extrabold text-gray-500 dark:text-white flex items-center gap-2 font-mono"
+      style={{ minWidth: 200 }}
     >
       The Arkenlist
     </h1>
@@ -195,11 +195,11 @@ if (error)
     width: isSticky ? "100%" : "auto",
     backgroundColor: isSticky ? "rgba(255,255,255,0.8)" : "transparent", // Light mode fallback
     backdropFilter: isSticky ? "blur(6px)" : "none",
-    boxShadow: isSticky ? "0 2px 10px rgba(0,0,0,0.2)" : "none",
+    // boxShadow: isSticky ? "0 2px 10px rgba(0,0,0,0.2)" : "none",
   }}
-  className={`max-w-5xl mx-auto p-3 rounded-b-lg ${
+  className={`max-w-auto   mx-auto p-3 rounded-b-lg  ${
     isSticky
-      ? "border-b border-gray-300 dark:border-gray-700 bg-white dark:bg-[#121212cc]"
+      ? "border-b border-gray-300 dark:border-gray-700  bg-white dark:bg-[#121212cc]"
       : ""
   }`}
 >
@@ -209,7 +209,7 @@ if (error)
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
-      className="flex items-center gap-4 p-2 rounded-lg bg-white dark:bg-[#1f1f1f] shadow-md dark:shadow-lg"
+      className="flex  items-center gap-6 justify-center items-center p-2 rounded-lg bg-white dark:bg-[#1f1f1f]  dark:shadow-lg"
     >
       <img
         src={searchedUser.avatar}
@@ -220,7 +220,7 @@ if (error)
         <h2 className="text-lg font-bold text-gray-900 dark:text-white">
           {searchedUser.username}
         </h2>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
+        <p className="text-sm text-gray-600 font-semibold dark:text-gray-400">
           Score: {searchedUser.score} | Repos: {searchedUser.repositories} | Commits: {searchedUser.commits} | PRs: {searchedUser.pullRequests}
         </p>
       </div>

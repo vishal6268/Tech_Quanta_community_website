@@ -201,18 +201,19 @@ export function useGitHubLeaderboardData() {
               const techquantaCommits = Object.values(repoCommits).reduce((a, b) => a + b, 0);
 
               statsArray.push({
-                username,
-                avatar: avatarUrl,
-                commits: contributionsCollection.totalCommitContributions,
-                pullRequests: contributionsCollection.totalPullRequestContributions,
-                issues: contributionsCollection.totalIssueContributions,
-                reposContributed: repositoriesContributedTo.totalCount,
-                stars: starredRepositories.totalCount,
-                followers: followers.totalCount,
-                score: Math.round(score + techquantaCommits * 4),
-                techquantaCommits,
-                techquantaContributions: repoCommits,
-              });
+  username,
+  avatar: avatarUrl,
+  commits: contributionsCollection.totalCommitContributions,
+  pullRequests: contributionsCollection.totalPullRequestContributions,
+  issues: contributionsCollection.totalIssueContributions,
+  reposContributed: repositoriesContributedTo.totalCount,   // <-- total repos contributed (GitHub data)
+  stars: starredRepositories.totalCount,
+  followers: followers.totalCount,
+  score: Math.round(score + techquantaCommits * 4),
+  techquantaCommits,                  // total commits to TechQuanta repos summed across repos
+  techquantaContributions: repoCommits,  // per-repo commit counts for TechQuanta repos
+});
+
 
               success = true;
               retryCount = 0;
@@ -319,14 +320,15 @@ export function useGitHubLeaderboardData() {
     setAllDataNull(allUserStats.length === 0);
   };
 
-  return {
-    userStats: displayedUserStats || [],
-    error: error || null,
-    loading: loading || false,
-    loadingFilter: loadingFilter || false,
-    filterActive: filterActive || false,
-    allDataNull,
-    showActiveMembers,
-    showAllMembers,
-  };
+return {
+  userStats: displayedUserStats || [],
+  error: error || null,
+  loading: loading || false,
+  loadingFilter: loadingFilter || false,
+  filterActive: filterActive || false,
+  allDataNull,
+  showActiveMembers,
+  showAllMembers,
+};
+
 }

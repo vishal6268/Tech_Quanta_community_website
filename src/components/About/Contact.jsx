@@ -82,7 +82,7 @@ const ContactForm = () => {
 
   if (isSubmitted) {
     return (
-      <div className="text-center font-sans text-transparent bg-clip-text bg-[#2ECC71] dark:bg-[#00BFFF] font-semibold text-xl min-h-screen flex items-center justify-center bg-[#121212]">
+      <div className="text-center font-sans text-transparent bg-clip-text bg-transparent font-semibold text-xl min-h-screen flex items-center justify-center bg-transparent">
         Thank you! We'll be in touch soon.
       </div>
     );
@@ -90,7 +90,7 @@ const ContactForm = () => {
 
   if (hasError) {
     return (
-      <div className="min-h-[500px] flex items-center justify-center bg-[#121212] px-4">
+      <div className="min-h-[500px] flex items-center justify-center bg-transparent px-4">
         <div className="text-center font-sans text-red-400">
           <p className="text-xl font-semibold mb-4">
             Email couldn't be sent — server issue.
@@ -114,7 +114,7 @@ const ContactForm = () => {
     <div className="min-h-[500px] flex items-center justify-center px-4">
       <form
         onSubmit={handleFinalSubmit}
-        className="group bg-[#121212] backdrop-blur w-full max-w-md p-8 space-y-8 rounded-xl border-none shadow-lg transition-colors duration-300 hover:border-[#2ECC71]/70"
+        className="group bg-transparent backdrop-blur w-full max-w-md p-8 space-y-8 rounded-xl border-none  transition-colors duration-300 hover:border-[#2ECC71]/70"
       >
         <h2 className="text-center text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#00BFFF] to-[#8E44AD] group-hover:from-[#2ECC71] group-hover:to-[#27AE60] font-sans transition-colors duration-300">
           Contact Us
