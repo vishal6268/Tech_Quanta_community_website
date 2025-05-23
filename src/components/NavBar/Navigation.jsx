@@ -49,7 +49,7 @@ function Header() {
             className="z-20 flex items-center space-x-2 px-2 py-1 text-lg font-semibold"
           >
             <NavbarLogo/>
-            <span className="text-[0.6rem] text-black dark:text-white select-none">
+            <span className="text-sm text-black dark:text-white select-none">
               Tech<span className="text-[1rem]">Quanta</span>
             </span>
           </NavLink>

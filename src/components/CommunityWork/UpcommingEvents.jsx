@@ -12,28 +12,29 @@ export default function SliderShowcase() {
   // Always fetch fresh data and overwrite sessionStorage on initial site load
   useEffect(() => {
     const fetchSlides = async () => {
-      try {
-        const response = await axios.get(
-          'https://script.google.com/macros/s/AKfycbwVRv4cREwQw1NR0RzZbhOcUQ3MKzvOV4H1Gdv6TkYwbTdYKMBxRauVfu_hA6ACFBkaTw/exec'
-        );
+  try {
+    const response = await axios.get(
+      'https://script.google.com/macros/s/AKfycbyrf82D6QQvQADaR2VePsiMsb_Y-nJwmqznX16y4iLHjLOyBUkdGEsGUzVbv-iU5ffcqg/exec'
+    );
 
-        if (response.data && Array.isArray(response.data.events)) {
-          const mappedSlides = response.data.events.map(event => ({
-            image: event.image || '',
-            title: event.heading || '',
-            description: event.description || '',
-            link: event.link || ''
-          }));
+    if (response.data && Array.isArray(response.data.events)) {
+      const mappedSlides = response.data.events.map(event => ({
+        image: event.post_link || '', // ✅ assign post_link as image URL
+        title: event.event_heading || '',
+        description: event.event_description || '',
+        link: event.event_registration_link || ''
+      }));
 
-          setSlides(mappedSlides);
-          sessionStorage.setItem('slides', JSON.stringify(mappedSlides)); // overwrite session
-        } else {
-          console.error('Unexpected data format:', response.data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch slide data:', error);
-      }
-    };
+      setSlides(mappedSlides);
+      sessionStorage.setItem('slides', JSON.stringify(mappedSlides));
+    } else {
+      console.error('Unexpected data format:', response.data);
+    }
+  } catch (error) {
+    console.error('Failed to fetch slide data:', error);
+  }
+};
+
 
     fetchSlides();
   }, []);

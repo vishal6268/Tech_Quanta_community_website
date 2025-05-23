@@ -1,20 +1,41 @@
-// src/components/Layout.jsx
-import { Outlet } from "react-router-dom";
-import Navbar from "./components/NavBar/Navigation";
-// import Footer from "./components/Footer/Footer";
-// import "./Layout.css"; // Import your CSS file for styling
+import React from "react";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 
+// Components
+import Header from "./components/NavBar/Navigation";
+// import Footer from "./components/Footer";
 
-const Layout = () => {
+// Pages
+import Home from "./pages/Home";
+import About from "./pages/About";
+import CommunityWork from "./pages/CommunityWork";
+import LeaderBoard from "./pages/LeaderBoard";
+
+// Layout component wrapping header + outlet for pages
+function RootLayout() {
   return (
-    <div>
-      <Navbar />
-      <main >
-        <Outlet /> {/* This renders the route's child */}
+    <>
+      <Header />
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+        <Outlet />
       </main>
       {/* <Footer /> */}
-    </div>
+    </>
   );
-};
+}
 
-export default Layout;
+// Define routes with children under RootLayout
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <RootLayout />,
+    children: [
+      { index: true, element: <Home /> },
+      { path: "leaderboard", element: <LeaderBoard /> },
+      { path: "about", element: <About /> },
+      { path: "community-work", element: <CommunityWork /> },
+    ],
+  },
+]);
+
+export default router;
