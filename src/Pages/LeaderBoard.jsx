@@ -136,7 +136,7 @@ export default function Leaderboard() {
         <div className="relative flex items-center justify-center w-full px-4 py-2">
           <h1
             className={`text-4xl  font-extrabold ${themeClasses.text} flex  items-center gap-2 font-mono`}
-            style={{ minWidth: 200 ,color:"#00BFFF"}}
+            style={{ minWidth: 200 ,color:"white"}}
           >
             The Arkenlist
           </h1>

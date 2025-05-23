@@ -78,49 +78,67 @@ export const NavBody = ({
 };
 
 export const NavItems = ({
-    items,
-    className,
-    onItemClick
+  items,
+  className,
+  onItemClick
 }) => {
-    const [hovered, setHovered] = useState(null);
+  const [hovered, setHovered] = React.useState(null);
 
-    return (
-      <motion.div
-        onMouseLeave={() => setHovered(null)}
-        className={cn(
-          "absolute inset-0 hidden flex-1 flex-row items-center justify-center space-x-2 text-sm font-medium text-zinc-600 transition duration-200 hover:text-zinc-800 lg:flex lg:space-x-2",
-          className
-        )}
-      >
-        {items.map((item, idx) => (
+  // Define colors directly here:
+  const lightColors = [
+    "#ff7f7f", // light red
+    "#7fbfff", // light blue
+    "#7fff7f", // light green
+  ];
+
+  return (
+    <motion.div
+      onMouseLeave={() => setHovered(null)}
+      className={cn(
+        "absolute inset-0 hidden flex-1 flex-row items-center justify-center space-x-4 text-sm transition duration-300 lg:flex",
+        className
+      )}
+    >
+      {items.map((item, idx) => {
+        // Cycle colors through the 3 defined lightColors, fallback white on dark
+        const color = 
+          window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? "#ffffff"
+            : lightColors[idx % lightColors.length];
+
+        return (
           <NavLink
-                onMouseEnter={() => setHovered(idx)}
-                onMouseLeave={() => setHovered(null)}
-                onClick={onItemClick}
-                className="relative group px-4 py-2 text-white font-bold hover:text-black transition-colors duration-300 ease-in-out"
-                key={`link-${idx}`}
-                to={item.link}
-            >
+            key={`link-${idx}`}
+            to={item.link}
+            onClick={onItemClick}
+            onMouseEnter={() => setHovered(idx)}
+            onMouseLeave={() => setHovered(null)}
+            className={cn(
+              "relative group px-4 py-2 font-extrabold uppercase tracking-wide font-rajdhani transition-colors duration-300",
+              "hover:scale-105"
+            )}
+            style={{ color }}
+          >
             <AnimatePresence mode="wait">
-                {hovered === idx && (
+              {hovered === idx && (
                 <motion.div
-                    key="hovered-bg"
-                    layoutId="hovered"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="absolute inset-0 rounded-full bg-white dark:bg-white pointer-events-none"
+                  key="hovered-bg"
+                  layoutId="hovered"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0.1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="absolute inset-0 rounded-full bg-black dark:bg-white pointer-events-none"
                 />
-                )}
+              )}
             </AnimatePresence>
             <span className="relative z-10">{item.name}</span>
-            </NavLink>
-        ))}
-      </motion.div>
-    );
+          </NavLink>
+        );
+      })}
+    </motion.div>
+  );
 };
-
 
 export const MobileNav = ({
     children,
@@ -208,12 +226,18 @@ export const NavbarLogo = () => {
             to="/"
             className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black">
             <img
-                src="logo.jpg"
-                alt="logo"
+                src="/lightlogo.png"
+                alt=""
                 width={30}
                 height={30}
-                className="rounded-full" />
-            <span className="text-[1rem] text-black dark:text-white">
+                className="hidden dark:block" />
+            <img
+                src="/darklogo.png"
+                alt=""
+                width={30}
+                height={30}
+                className="block dark:hidden" />
+            <span className="text-[1rem] text-white dark:text-white">
   Tech<span className="text-[1.4rem] text-blue-600 dark:text-blue-400">Quanta</span>
 </span>
 

@@ -11,14 +11,27 @@ import {
   MobileNavToggle,
   MobileNavMenu,
 } from "../ui/resizable-navbar";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 
 function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isDark, setIsDark] = useState(false);
 
+  useEffect(() => {
+    // Detect system color scheme preference
+    const matchMedia = window.matchMedia("(prefers-color-scheme: dark)");
+    setIsDark(matchMedia.matches);
+
+    // Listen for changes
+    const handler = (e) => setIsDark(e.matches);
+    matchMedia.addEventListener("change", handler);
+
+    // Cleanup
+    return () => matchMedia.removeEventListener("change", handler);
+  }, []);
   const navItems = [
     { name: "Community Work", link: "community-work" },
     { name: "LeaderBoard", link: "leaderboard" },
@@ -26,25 +39,25 @@ function Header() {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 w-full bg-[#121212] background-blur text-white font-rajdhani shadow-blue-900/30 backdrop-blur-sm">
+    <header className="fixed top-0 left-0 right-0 z-50 w-full   text-white font-rajdhani shadow-blue-900/30">
       <Navbar className="max-w-7xl mx-auto px-4 text-[#2ECC71]">
         {/* Desktop Nav */}
         <NavBody>
-          <NavLink
-            to="/"
-            className="z-20 flex items-center space-x-2 px-2 py-1 text-lg font-semibold"
-          >
-            <img
-              src="/logo.jpg"
-              alt="TechQuanta Logo"
-              width={44}
-              height={44}
-              className="rounded-full shadow-md"
-            />
-            <span className="text-[0.6rem] text-white">
-              Tech<span className="text-[1rem]">Quanta</span>
-            </span>
-          </NavLink>
+         <NavLink
+        to="/"
+        className="z-20 flex items-center space-x-2 px-2 py-1 text-lg font-semibold"
+      >
+        <img
+          src={isDark ? "/lightlogo.png" : "/darklogo.png"}
+          alt="TechQuanta Logo"
+          width={44}
+          height={44}
+          className=""
+        />
+        <span className="text-[0.6rem] text-black dark:text-white">
+          Tech<span className="text-[1rem]">Quanta</span>
+        </span>
+      </NavLink>
 
           <NavItems
             items={navItems.map((item) => ({
@@ -79,13 +92,19 @@ function Header() {
             <NavbarLogo>
               <NavLink to="/" className="flex items-center space-x-2">
                 <img
-                  src="/logo.jpg"
-                  alt="logo"
+                  src="/lightlogo.png"
+                  alt=""
                   width={40}
                   height={40}
-                  className="rounded-full"
+                  className="inline-block rounded-full dark:block"
                 />
-                <span className="text-white font-['Exo 2']">TechQuanta</span>
+                <img
+                  src="/darklogo.png"
+                  alt=""
+                  width={40}
+                  height={40}
+                  className="inline-block rounded-full dark:hidden"
+                />
               </NavLink>
             </NavbarLogo>
             <MobileNavToggle
