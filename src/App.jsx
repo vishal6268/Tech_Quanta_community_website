@@ -15,24 +15,14 @@ import About from "./pages/About";
 import CommunityWork from "./pages/CommunityWork";
 import LeaderBoard from "./pages/LeaderBoard";
 
-// Layout component to wrap the pages with Header and Outlet for nested routes
-const Layout = () => (
-  <>
-    <Header />
-    <main>
-      <Outlet />
-    </main>
-    {/* <Footer /> */}
-  </>
-);
 
 function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
+        <Header/>
         <Routes>
-          {/* Use a layout route to wrap your pages */}
-          <Route path="/" element={<Layout />}>
+          <Route path="/">
             <Route index element={<Home />} />
             <Route path="leaderboard" element={<LeaderBoard />} />
             <Route path="about" element={<About />} />
@@ -50,6 +40,7 @@ function App() {
           pauseOnFocusLoss
           theme="colored"
         />
+        {/* <Footer/> */}
       </BrowserRouter>
     </ThemeProvider>
   );

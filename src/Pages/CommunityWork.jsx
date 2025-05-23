@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import UpcomingEvents from "../components/CommunityWork/UpcommingEvents";
 import Loading from "../components/ui/loader"; // Adjust path if different
+import BecomeSpeakerSection from "../components/CommunityWork/BecomeSpeaker";
 
 const About = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -22,7 +23,10 @@ const About = () => {
       {isLoading ? (
         <Loading message="Running Quantum Scripts..." />
       ) : (
-        <UpcomingEvents />
+        <>
+          <UpcomingEvents />
+          <BecomeSpeakerSection />
+        </>
       )}
     </div>
   );
