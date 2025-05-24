@@ -3,6 +3,9 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { HoverBorderGradient } from './../components/ui/hover-border-gradient';
 import CoreTeam from "../components/LandingPage/CoreTeam";
+import Volunteers from "../components/LandingPage/Volunteer";
+import { HeroHighlight } from "../components/ui/hero-highlight";
+import { AnimatedTestimonials } from "../components/ui/animated-testimonials";
 
 const words = ['Developers', 'Students', 'Professionals', 'Engineers', 'Creators'];
 
@@ -22,12 +25,52 @@ const Home = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+   const testimonials = [
+    {
+      quote:
+        "The attention to detail and innovative features have completely transformed our workflow. This is exactly what we've been looking for.",
+      name: "Sarah Chen",
+      designation: "Product Manager at TechFlow",
+      src: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=3560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    },
+    {
+      quote:
+        "Implementation was seamless and the results exceeded our expectations. The platform's flexibility is remarkable.",
+      name: "Michael Rodriguez",
+      designation: "CTO at InnovateSphere",
+      src: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    },
+    {
+      quote:
+        "This solution has significantly improved our team's productivity. The intuitive interface makes complex tasks simple.",
+      name: "Emily Watson",
+      designation: "Operations Director at CloudScale",
+      src: "https://images.unsplash.com/photo-1623582854588-d60de57fa33f?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    },
+    {
+      quote:
+        "Outstanding support and robust features. It's rare to find a product that delivers on all its promises.",
+      name: "James Kim",
+      designation: "Engineering Lead at DataPro",
+      src: "https://images.unsplash.com/photo-1636041293178-808a6762ab39?q=80&w=3464&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    },
+    {
+      quote:
+        "The scalability and performance have been game-changing for our organization. Highly recommend to any growing business.",
+      name: "Lisa Thompson",
+      designation: "VP of Technology at FutureNet",
+      src: "https://images.unsplash.com/photo-1624561172888-ac93c696e10c?q=80&w=2592&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    },
+  ];
+
   return (
+  <>
+     <HeroHighlight>
+       <section className="h-full bg-transparent text-white px-6 flex flex-col items-center justify-center font-[Poppins] text-center pt-36">
 
-    <section className="h-full dark:bg-[#121212] text-white px-6 flex flex-col items-center justify-center font-[Poppins] text-center pt-36">
 
-
-      <div className="min-h-screen bg-gray-50 dark:bg-[#121212] font-['Inter',_system-ui,_sans-serif]">
+      <div className="min-h-screen bg-gray-50 bg-transparent font-['Inter',_system-ui,_sans-serif]">
         <main className="container mx-auto px-4 py-5 md:py-5">
           {/* Feature Buttons */}
           <div className="flex flex-wrap justify-center gap-4 my-2 pb-2">
@@ -38,7 +81,7 @@ const Home = () => {
             ].map((button) => (
               <div
                 key={button.label}
-                className={`${button.color} ${button.border} border-4 rounded-full px-4 py-1 font-bold text-lg transform transition-transform hover:scale-105 cursor-pointer`}
+                className={`${button.color} ${button.border} border-4 rounded-full px-4 py-1 font-bold text-lg text-gray-50 transform transition-transform hover:scale-105 cursor-pointer`}
               >
                 {button.label}
               </div>
@@ -67,7 +110,7 @@ const Home = () => {
               </div>
             </h1>
 
-            <p className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto my-8">
+            <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto my-8">
               WeMakeDevs is an inclusive global community for anyone passionate about
               technology. We foster collaboration and innovation through global events.
             </p>
@@ -92,21 +135,25 @@ const Home = () => {
           </div>
         </main>
       </div>
-
-      <div className="flex justify-center items-center h-full w-full px-4 py-5">
-        <CoreTeam />
-      </div>
-
-
-      {/* Tagline */}
-      <p className="text-[#2ECC71] font-semibold tracking-wide text-sm md:text-base uppercase mb-2">
-
-        ## Temporary Template do need to change okay testing because of Navbar
-        Empowering Open Source Minds
-      </p>
-
+           {/* <div className="w-full h-[127px] bg-[#121212] absolute bottom-0 left-0"></div> */}
 
     </section>
+     </HeroHighlight>
+       <section className="h-full dark:bg-[#121212] text-white px-6 flex flex-col items-center justify-center font-[Poppins] text-center pt-36">
+         <div className="flex justify-center items-center h-full w-full px-4 py-5 pt-0">
+        <CoreTeam />
+      </div>
+       <div className="flex justify-center items-center h-full w-full px-4 py-5 pt-0">
+        <Volunteers />
+      </div>
+       <div className="flex justify-center flex-col items-center h-full w-full px-4 py-5 pt-0">
+      <HeroHighlight>
+          <span className="text-white text-7xl text-center mb-5">Community Founders</span>
+       <AnimatedTestimonials testimonials={testimonials} />
+      </HeroHighlight>
+      </div>
+    </section>
+  </>
   );
 };
 

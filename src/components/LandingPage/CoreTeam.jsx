@@ -1,23 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 
 const CoreTeam = () => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [containerSize, setContainerSize] = useState({ width: 1200, height: 800 });
+  const [containerSize, setContainerSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const updateSize = () => {
       setContainerSize({
         width: window.innerWidth,
-        height: window.innerHeight
+        height: window.innerHeight,
       });
     };
-    
-    updateSize();
     window.addEventListener('resize', updateSize);
-    
-    setTimeout(() => setIsLoaded(true), 100);
-    
     return () => window.removeEventListener('resize', updateSize);
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsLoaded(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   const volunteers = [
@@ -37,7 +53,7 @@ const CoreTeam = () => {
     { id: 14, name: "Nick Thompson", role: "Tech Lead" },
     { id: 15, name: "Olivia Garcia", role: "Designer" },
     { id: 16, name: "Paul Martinez", role: "Developer" },
-    { id: 17, name: "Quinn Rodriguez", role: "Analyst" }
+    { id: 17, name: "Quinn Rodriguez", role: "Analyst" },
   ];
 
   const getRandomGradient = (id) => {
@@ -58,13 +74,12 @@ const CoreTeam = () => {
       'linear-gradient(135deg, #00bcd4 0%, #4dd0e1 100%)',
       'linear-gradient(135deg, #009688 0%, #4db6ac 100%)',
       'linear-gradient(135deg, #ff5722 0%, #ff8a65 100%)',
-      'linear-gradient(135deg, #795548 0%, #a1887f 100%)'
+      'linear-gradient(135deg, #795548 0%, #a1887f 100%)',
     ];
     return gradients[id % gradients.length];
   };
 
-  const getBubbleSize = () => {
-    const width = window.innerWidth;
+  const getBubbleSize = (width) => {
     if (width <= 480) return 60;
     if (width <= 768) return 70;
     if (width <= 1024) return 90;
@@ -72,24 +87,29 @@ const CoreTeam = () => {
     return 120;
   };
 
-  const calculateDiamondPositions = () => {
-    const bubbleSize = getBubbleSize();
-    const horizontalSpacing = Math.min(160, containerSize.width * 0.12);
-    const verticalSpacing = bubbleSize + 40;
+  const bubbleSize = useMemo(() => getBubbleSize(containerSize.width), [containerSize.width]);
 
+  const adjustedPattern = useMemo(() => {
     const pattern = [3, 5, 7, 5, 3];
-    let adjustedPattern = [];
-    let totalAssigned = 0;
-
-    for (let i = 0; i < pattern.length && totalAssigned < volunteers.length; i++) {
-      const remaining = volunteers.length - totalAssigned;
-      const currentRowSize = Math.min(pattern[i], remaining);
-      adjustedPattern.push(currentRowSize);
-      totalAssigned += currentRowSize;
+    let adjusted = [];
+    let total = 0;
+    for (let i = 0; i < pattern.length && total < volunteers.length; i++) {
+      const remaining = volunteers.length - total;
+      const current = Math.min(pattern[i], remaining);
+      adjusted.push(current);
+      total += current;
     }
+    return adjusted;
+  }, [volunteers.length]);
 
-    const totalHeight = (adjustedPattern.length - 1) * verticalSpacing;
-    const startY = (containerSize.height - totalHeight) / 2;
+  const verticalSpacing = bubbleSize * 2.0;
+  const rows = adjustedPattern.length;
+  const totalHeight = (rows - 1) * verticalSpacing + 90;
+  const requiredHeight = totalHeight + bubbleSize * 2 + 100;
+
+  const positions = useMemo(() => {
+    const horizontalSpacing = Math.min(160, containerSize.width * 0.12);
+    const startY = (requiredHeight - totalHeight) / 2 + 80;
 
     const positions = [];
     let volunteerIndex = 0;
@@ -110,41 +130,54 @@ const CoreTeam = () => {
       }
 
       for (let colIndex = 0; colIndex < rowCount && volunteerIndex < volunteers.length; colIndex++) {
-        const x = startX + (colIndex * horizontalSpacing);
-        const y = startY + (rowIndex * verticalSpacing);
-
+        const x = startX + colIndex * horizontalSpacing - 46;
+        const y = startY + rowIndex * verticalSpacing - 40;
         const randomX = x + (Math.random() - 0.5) * 20;
         const randomY = y + (Math.random() - 0.5) * 15;
-
         positions.push({
           x: Math.max(bubbleSize / 2, Math.min(randomX, containerSize.width - bubbleSize / 2)),
-          y: Math.max(bubbleSize / 2, Math.min(randomY, containerSize.height - bubbleSize / 2)),
+          y: Math.max(bubbleSize / 2, Math.min(randomY, requiredHeight - bubbleSize / 2)),
           direction,
           row: rowIndex,
-          col: colIndex
+          col: colIndex,
         });
-
         volunteerIndex++;
       }
     });
-
     return positions;
-  };
-
-  const positions = calculateDiamondPositions();
+  }, [containerSize.width, requiredHeight, bubbleSize, adjustedPattern]);
 
   const styles = {
     container: {
       position: 'relative',
       width: '100vw',
-      height: '50rem',
+      height: `${requiredHeight}px`,
       backgroundColor: '#1a1a1a',
+      borderRadius:'25px',
       color: 'white',
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       overflow: 'hidden',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center'
+    },
+    headingContainer: {
+      position: 'absolute',
+      top: '20px',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      textAlign: 'center',
+      zIndex: 20,
+    },
+    heading: {
+      color: 'white',
+      fontSize: '34px',
+      fontWeight: 'bold',
+      marginBottom: '15px',
+    },
+    separator: {
+      border: 'none',
+      height: '2px',
+      backgroundColor: 'rgba(255,255,255,0.2)',
+      width: '100px',
+      margin: '0 auto',
     },
     volunteerItem: {
       position: 'absolute',
@@ -153,19 +186,19 @@ const CoreTeam = () => {
       alignItems: 'center',
       textAlign: 'center',
       zIndex: 10,
-      transition: 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+      transition: 'all 2s cubic-bezier(0.33, 0, 0, 1)', // Smoother and longer transition
       cursor: 'pointer',
-      userSelect: 'none'
+      userSelect: 'none',
     },
     volunteerAvatar: {
-      width: '120px',
-      height: '120px',
+      width: `${bubbleSize}px`,
+      height: `${bubbleSize}px`,
       borderRadius: '50%',
       marginBottom: '12px',
       position: 'relative',
       overflow: 'hidden',
       boxShadow: '0 10px 40px rgba(0,0,0,0.4)',
-      border: '3px solid rgba(255,255,255,0.15)'
+      border: '3px solid rgba(255,255,255,0.15)',
     },
     avatarShine: {
       position: 'absolute',
@@ -174,7 +207,7 @@ const CoreTeam = () => {
       right: 0,
       bottom: 0,
       background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), transparent 60%)',
-      borderRadius: '50%'
+      borderRadius: '50%',
     },
     volunteerName: {
       color: 'white',
@@ -186,7 +219,7 @@ const CoreTeam = () => {
       textShadow: '0 2px 8px rgba(0,0,0,0.7)',
       whiteSpace: 'nowrap',
       overflow: 'hidden',
-      textOverflow: 'ellipsis'
+      textOverflow: 'ellipsis',
     },
     volunteerRole: {
       color: '#bbb',
@@ -197,7 +230,7 @@ const CoreTeam = () => {
       textShadow: '0 1px 4px rgba(0,0,0,0.7)',
       whiteSpace: 'nowrap',
       overflow: 'hidden',
-      textOverflow: 'ellipsis'
+      textOverflow: 'ellipsis',
     },
     linkedinIcon: {
       width: '22px',
@@ -211,13 +244,12 @@ const CoreTeam = () => {
       fontSize: '12px',
       fontWeight: 'bold',
       color: 'white',
-      boxShadow: '0 4px 12px rgba(0,119,181,0.4)'
-    }
+      boxShadow: '0 4px 12px rgba(0,119,181,0.4)',
+    },
   };
 
-  const getAnimationStyle = (direction, delay, position) => {
+  const getAnimationStyle = (direction, rowIndex, position) => {
     let initial = {};
-    
     switch (direction) {
       case 'from-left':
         initial = { transform: `translate(${-containerSize.width}px, 0)`, opacity: 0 };
@@ -226,98 +258,65 @@ const CoreTeam = () => {
         initial = { transform: `translate(${containerSize.width}px, 0)`, opacity: 0 };
         break;
       case 'from-top':
-        initial = { transform: `translate(0, ${-containerSize.height}px)`, opacity: 0 };
+        initial = { transform: `translate(0, ${-requiredHeight}px)`, opacity: 0 };
         break;
       case 'from-bottom':
-        initial = { transform: `translate(0, ${containerSize.height}px)`, opacity: 0 };
+        initial = { transform: `translate(0, ${requiredHeight}px)`, opacity: 0 };
         break;
       default:
         initial = { opacity: 0 };
     }
-
-    const bubbleSize = getBubbleSize();
     return {
       ...styles.volunteerItem,
       left: position.x - bubbleSize / 2,
       top: position.y - bubbleSize / 2,
-      ...(isLoaded ? { 
-        transform: 'translate(0, 0)', 
-        opacity: 1 
-      } : initial),
-      transitionDelay: `${delay * 200}ms`
+      ...(isLoaded ? { transform: 'translate(0, 0)', opacity: 1 } : initial),
+      transitionDelay: `${rowIndex * 500}ms`, // Increased delay for row-based staggering
     };
   };
 
   return (
-    <div style={styles.container}>
+    <div ref={containerRef} style={styles.container} className='flex justify-center items-center w-full'>
+      <div style={styles.headingContainer}>
+        <h1 style={styles.heading}>Community Core Team</h1>
+        <hr style={styles.separator} />
+      </div>
       <style>
         {`
           @keyframes diamondFloat {
-            0%, 100% { 
-              transform: translateY(0px) rotate(0deg) scale(1); 
-            }
-            25% { 
-              transform: translateY(-15px) rotate(1deg) scale(1.02); 
-            }
-            50% { 
-              transform: translateY(-8px) rotate(-1deg) scale(0.98); 
-            }
-            75% { 
-              transform: translateY(-20px) rotate(0.5deg) scale(1.01); 
-            }
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
           }
-          
           @keyframes pulse {
-            0%, 100% { 
-              box-shadow: 0 10px 40px rgba(0,0,0,0.4); 
-            }
-            50% { 
-              box-shadow: 0 15px 60px rgba(0,0,0,0.6); 
-            }
+            0%, 100% { box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+            50% { box-shadow: 0 12px 30px rgba(0,0,0,0.5); }
           }
-          
           .volunteer-item {
             animation: diamondFloat 10s ease-in-out infinite;
+            transition: opacity 2s cubic-bezier(0.33, 0, 0, 1), transform 2s cubic-bezier(0.33, 0, 0, 1), filter 0.3s ease;
           }
-          
-          .volunteer-item:nth-child(3n) {
-            animation-delay: 1s;
+          .volunteer-avatar {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
           }
-          
-          .volunteer-item:nth-child(3n+1) {
-            animation-delay: 2s;
-          }
-          
-          .volunteer-item:nth-child(3n+2) {
-            animation-delay: 3s;
-          }
-          
-          .volunteer-item .volunteer-avatar {
-            animation: pulse 6s ease-in-out infinite;
-          }
-          
           .volunteer-item:hover {
-            transform: scale(1.2) !important;
             z-index: 100 !important;
-            filter: brightness(1.15) saturate(1.2);
+            filter: brightness(1.1) saturate(1.1);
+            transition: transform 0.3s ease;
           }
-          
           .volunteer-item:hover .volunteer-avatar {
+            transform: scale(1.1) !important;
             transform: rotate(5deg);
             box-shadow: 0 20px 80px rgba(0,0,0,0.8) !important;
           }
-          
           .volunteer-item:hover .volunteer-name {
             color: #fff !important;
-            font-size: 18px !important;
-            font-weight: 700 !important;
+            font-size: 17px !important;
+            font-weight: 600 !important;
           }
-          
           .volunteer-item:hover .volunteer-role {
             color: #eee !important;
             font-size: 15px !important;
           }
-          
           @media (max-width: 1400px) {
             .volunteer-avatar {
               width: 100px !important;
@@ -330,7 +329,6 @@ const CoreTeam = () => {
               font-size: 12px !important;
             }
           }
-          
           @media (max-width: 1024px) {
             .volunteer-avatar {
               width: 90px !important;
@@ -345,7 +343,6 @@ const CoreTeam = () => {
               max-width: 110px !important;
             }
           }
-          
           @media (max-width: 768px) {
             .volunteer-avatar {
               width: 70px !important;
@@ -365,7 +362,6 @@ const CoreTeam = () => {
               font-size: 10px !important;
             }
           }
-          
           @media (max-width: 480px) {
             .volunteer-avatar {
               width: 60px !important;
@@ -387,28 +383,34 @@ const CoreTeam = () => {
           }
         `}
       </style>
-      
       {volunteers.map((volunteer, index) => (
         <div
           key={volunteer.id}
           className="volunteer-item"
           style={getAnimationStyle(
-            positions[index]?.direction || 'from-top', 
-            index + 1, 
-            positions[index] || { x: containerSize.width/2, y: containerSize.height/2 }
+            positions[index]?.direction || 'from-top',
+            positions[index]?.row || 0,
+            positions[index] || { x: containerSize.width / 2, y: requiredHeight / 2 }
           )}
         >
           <div
             style={{
               ...styles.volunteerAvatar,
-              background: getRandomGradient(volunteer.id)
+              background: getRandomGradient(volunteer.id),
             }}
+            className="volunteer-avatar"
           >
             <div style={styles.avatarShine}></div>
           </div>
-          <div style={styles.volunteerName}>{volunteer.name}</div>
-          <div style={styles.volunteerRole}>{volunteer.role}</div>
-          <div style={styles.linkedinIcon}>in</div>
+          <div style={styles.volunteerName} className="volunteer-name">
+            {volunteer.name}
+          </div>
+          <div style={styles.volunteerRole} className="volunteer-role">
+            {volunteer.role}
+          </div>
+          <div style={styles.linkedinIcon} className="linkedin-icon">
+            in
+          </div>
         </div>
       ))}
     </div>
