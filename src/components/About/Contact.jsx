@@ -114,9 +114,9 @@ const ContactForm = () => {
     <div className="min-h-[500px] flex items-center justify-center px-4">
       <form
         onSubmit={handleFinalSubmit}
-        className="group bg-transparent backdrop-blur w-full max-w-md p-8 space-y-8 rounded-xl border-none  transition-colors duration-300 hover:border-[#2ECC71]/70"
+        className="group bg-transparent backdrop-blur w-full max-w-md p-8 space-y-8 rounded-xl border-none  transition-colors duration-300 "
       >
-        <h2 className="text-center text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#00BFFF] to-[#8E44AD] group-hover:from-[#2ECC71] group-hover:to-[#27AE60] font-sans transition-colors duration-300">
+        <h2 className="text-center text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#00BFFF] to-[#8E44AD] from-[#2ECC71 font-sans transition-colors duration-300">
           Contact Us
         </h2>
 

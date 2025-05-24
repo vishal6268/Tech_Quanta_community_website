@@ -7,7 +7,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 
 // Components
 import Header from "./components/NavBar/Navigation";
-// import Footer from "./components/Footer";
+import Footer from "./components/Footer/Footer";
 
 // Pages
 import Home from "./pages/Home";
@@ -40,7 +40,7 @@ function App() {
           pauseOnFocusLoss
           theme="colored"
         />
-        {/* <Footer/> */}
+        <Footer/>
       </BrowserRouter>
     </ThemeProvider>
   );

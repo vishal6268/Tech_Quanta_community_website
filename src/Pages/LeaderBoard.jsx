@@ -48,7 +48,11 @@ export default function Leaderboard() {
   const [isSticky, setIsSticky] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
-
+    const featureButtons = [
+    { label: 'innovate', color: 'bg-orange-300', border: 'border-orange-400' },
+    { label: 'elevate', color: 'bg-green-300', border: 'border-green-400' },
+    { label: 'collaborate', color: 'bg-purple-300', border: 'border-purple-400' }
+  ];
   const openModal = () => {
     setIsOpen(true);
     setIsImageLoaded(false); // reset for next open
@@ -116,18 +120,37 @@ if (error)
   const searchTerm = debouncedSearch.trim();
 
   return (
-    <div className="bg-gray-50 dark:bg-[#121212] min-h-screen mt-[150px]">
+    <div className="bg-gray-50 dark:bg-[#121212] min-h-screen mt-[150px] pb-10">
 
       {/* Header & Search Input */}
       <motion.div
   ref={searchRef}
-  className={`max-w-7xl mx-auto flex flex-wrap items-center justify-center mb-6 gap-12
+  className={`max-w-7xl mx-auto flex flex-wrap justify-center  items-center mb-6 gap-12
     ${isSticky ? "top-0 left-0 right-0 z-50 px-5 py-3  bg-opacity-90 backdrop-blur-sm" : ""}
     bg-white dark:bg-transparent`}
   initial={{ y: -50, opacity: 0 }}
   animate={{ y: 0, opacity: 1 }}
   transition={{ type: "spring", stiffness: 120 }}
->
+> 
+ <div className="flex flex-wrap justify-center gap-4 my-6">
+  {featureButtons.map((button, index) => {
+    // Assign unique rotation degrees per button index
+    const rotations = [10, -3, -10]; // add more if you add more buttons
+    const rotation = rotations[index % rotations.length];
+
+    return (
+      <div
+        key={button.label}
+        className={`group ${button.color} ${button.border} border-4 outline-2px rounded-full font-rajdhani dark:text-black px-6 py-2 text-lg font-bold text-white cursor-pointer transition-transform duration-300 transform hover:scale-105 `}
+        style={{ transform: `rotate(${rotation}deg)`, perspective: '1000px' }}
+      >
+        <div className="transition-transform duration-300 group-hover:rotate-x-6 group-hover:-rotate-y-6">
+          {button.label}
+        </div>
+      </div>
+    );
+  })}
+</div>
   <div className="relative flex items-center justify-center w-full px-4 py-2">
     <h1
       className="text-4xl font-extrabold text-gray-500 dark:text-white flex items-center gap-2 font-mono"
@@ -136,14 +159,15 @@ if (error)
       The Arkenlist
     </h1>
   </div>
-
-  <div className="relative text-gray-400 focus-within:text-[#2ECC71]">
+<div className="flex flex-wrap justify-between items-center gap-4 w-full px-4 py-2 bg-transparent rounded-lg shadow-sm">
+  {/* Search Bar Section */}
+  <div className="relative flex items-center text-gray-400 focus-within:text-[#2ECC71] flex-grow max-w-sm">
     <AnimatePresence mode="wait" initial={false}>
       <motion.img
         key={imageIndex}
         src={rotatingImages[imageIndex]}
         alt="Rotating search"
-        className="absolute left-3 top-2 -translate-y-1/2 pointer-events-none w-6 h-6 rounded"
+        className="absolute left-3 top-1.5 -translate-y-1/2 w-8 h-6 rounded pointer-events-none"
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 10 }}
@@ -155,13 +179,14 @@ if (error)
       placeholder="Search users..."
       value={search}
       onChange={(e) => setSearch(e.target.value)}
-      className="pl-12 pr-4 py-2 rounded-full bg-gray-200 dark:bg-[#2a2a2a] text-gray-900 placeholder-gray-600 dark:text-white dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2ECC71] min-w-[180px] transition"
+      className="w-full pl-[60px] pr-4 py-2 rounded-full bg-black dark:bg-white text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#2ECC71] transition"
     />
   </div>
 
-  <div className="flex items-center gap-3 flex-wrap justify-center">
+  {/* Filter Controls Section */}
+  <div className="flex items-center gap-3 flex-wrap justify-end">
     <select
-      className="px-3 py-2 rounded-full bg-gray-200 dark:bg-[#2a2a2a] text-gray-900 dark:text-white placeholder-gray-600 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2ECC71] transition"
+      className=" py-2 rounded-full bg-orange-200 font-semibold text-center dark:bg-beige-200 text-gray-800 dark:text-black focus:outline-none focus:ring-2 focus:ring-[#2ECC71] transition"
       value={sortKey}
       onChange={(e) => setSortKey(e.target.value)}
     >
@@ -174,7 +199,7 @@ if (error)
     <button
       disabled={!filterActive}
       onClick={showAllMembers}
-      className="flex items-center gap-1 px-4 py-2 rounded-full text-white bg-black dark:bg-[#2ECC71] hover:bg-gray-800 dark:hover:bg-[#28b263] disabled:opacity-50 disabled:cursor-not-allowed"
+      className="px-4 py-2 rounded-full bg-black text-white dark:bg-[#2ECC71] dark:hover:bg-[#28b263] hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition"
     >
       Show All
     </button>
@@ -182,11 +207,14 @@ if (error)
     <button
       disabled={loadingFilter}
       onClick={showActiveMembers}
-      className="flex items-center gap-1 px-4 py-2 rounded-full text-white bg-black dark:bg-[#2ECC71] hover:bg-gray-800 dark:hover:bg-[#28b263] disabled:opacity-50 disabled:cursor-not-allowed"
+      className="px-4 py-2 rounded-full bg-black text-white dark:bg-white dark:text-black dark:hover:bg-[#28b263] hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-1"
     >
       <FaFilter />
     </button>
   </div>
+</div>
+
+  
 </motion.div>
 
 

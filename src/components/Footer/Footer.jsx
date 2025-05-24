@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 import {
-
   FaTelegramPlane,
   FaLinkedin,
   FaGithub,
@@ -17,7 +16,6 @@ const Footer = () => {
     About: "/about",
     FAQs: "/faqs",
     Join: "/join",
-    
     Hackathons: "/hackathons",
     Meetups: "/meetups",
     Linkedin: "https://www.linkedin.com/in/techquanta-community",
@@ -56,32 +54,32 @@ const Footer = () => {
     { icon: <FaGithub />, href: "https://github.com/TechQuanta" },
     { icon: <SiDocker />, href: "https://hub.docker.com/u/techquanta" },
     { icon: <SiGmail />, href: "" },
-    
   ];
 
   return (
     <footer
-      className={`font-space-grotesk px-6 md:px-16 pt-16 pb-8 ${
-        isDark ? "bg-[#0d1117] text-white" : "bg-gray-100 text-black"
+      className={`font-space-grotesk px-6 md:px-16 pt-2 pb-8 ${
+        isDark ? "bg-tranparent text-white" : "bg-gray-100 text-black"
       }`}
     >
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-10 text-sm mb-12">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-10 text-sm mb-12 justify-center items-center ">
         {sections.map(({ title, links }) => (
           <div key={title}>
-            <h4 className="font-semibold mb-3 border-b border-blue-400 inline-block">
+            <h4 className="font-semibold mb-3 border-b border-blue-400 inline-block dark:text-[#00BFFF]">
               {title}
             </h4>
             <ul>
               {links.map((link) => (
-                <li key={link} className="mb-2">
+                <li key={link} className="mb-2 ">
                   <a
-                    href={linkUrls[link]}
-                    target={link === "Contact" ? "_self" : "_blank"}
-                    rel={link === "Contact" ? undefined : "noopener noreferrer"}
-                    className="hover:underline cursor-pointer"
-                  >
-                    {link}
-                  </a>
+  href={linkUrls[link]}
+  target={link === "Contact" ? "_self" : "_blank"}
+  rel={link === "Contact" ? undefined : "noopener noreferrer"}
+  className="underline-slide dark:text-white"
+>
+  {link}
+</a>
+
                 </li>
               ))}
             </ul>
@@ -92,9 +90,14 @@ const Footer = () => {
       {/* Logo + Social Icons */}
       <div className="border-t border-gray-600 pt-6 flex flex-col md:flex-row justify-between items-center gap-6">
         <div className="flex items-center gap-2">
-          <span className="text-2xl text-blue-500">{</>}</span>
-          <span className="text-lg font-bold">Tech Quanta</span>
+          <span className="text-2xl text-blue-500">&lt;/&gt;</span>
+          <span className="text-sm text-black dark:text-white select-none">
+              Tech<span className="text-[1rem]">Quanta</span>
+            </span>
         </div>
+         <div className="text-center text-xs mt-6 text-gray-500">
+        © 2025 Tech Quanta. All rights reserved.
+      </div>
         <div className="flex gap-4 text-xl">
           {socialIcons.map(({ icon, href }, idx) => (
             <a
@@ -102,16 +105,12 @@ const Footer = () => {
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-blue-400"
+              className="hover:text-blue-400 text-black dark:text-white"
             >
               {icon}
             </a>
           ))}
         </div>
-      </div>
-
-      <div className="text-center text-xs mt-6 text-gray-500">
-        © 2025 Tech Quanta. All rights reserved.
       </div>
     </footer>
   );

@@ -44,7 +44,7 @@ const FeaturingRepos = () => {
   }, []);
 
   return (
-    <div className="bg-black text-white px-6 py-10 flex justify-center">
+    <div className="bg-transparent text-white px-6 py-10 flex justify-center">
       <div className="w-full max-w-6xl">
         <h2 className="text-4xl font-bold text-green-400 mb-8">Featuring Repo's</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

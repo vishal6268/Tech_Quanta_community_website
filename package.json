@@ -27,7 +27,8 @@
     "react-toastify": "^11.0.5",
     "recoil": "^0.7.7",
     "tailwind-merge": "^3.3.0",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "techquanta": "file:"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",

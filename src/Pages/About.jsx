@@ -8,10 +8,9 @@ const About = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate content loading (replace this with real checks if needed)
     const handleContentReady = setTimeout(() => {
       setIsLoading(false);
-    }, 1500); // Simulates loading time
+    }, 1500);
 
     return () => clearTimeout(handleContentReady);
   }, []);
@@ -19,7 +18,9 @@ const About = () => {
   return (
     <div className="min-h-screen transition-colors duration-300 mt-[100px] bg-white text-black dark:bg-transparent dark:text-white">
       {isLoading ? (
-        <Loading message="Running Quantum Scripts..." />
+        <div className="flex items-center justify-center min-h-[calc(100vh-100px)]">
+          <Loading message="Running Quantum Scripts..." />
+        </div>
       ) : (
         <>
           <AboutInfo />

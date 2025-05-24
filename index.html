@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   
   <!-- Favicons -->
-  <link rel="icon" href="/darklogo.png" type="image/jpg" sizes="32x32" />
+   <link id="favicon" rel="icon" type="image/png" sizes="32x32" href="/darklogo.png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
   <link rel="manifest" href="/site.webmanifest" />
   
@@ -37,11 +37,30 @@
   <meta name="twitter:description" content="Join Tech Quanta – the modern hub for tech quizzes, competitive leaderboards, and community-driven themes." />
   <meta name="twitter:image" content="https://techquanta.io/preview.png" />
    -->
+
 </head>
 
 <body>
   <div id="root"></div>
+
+  <!-- Main JS Entry -->
   <script type="module" src="/src/main.jsx" defer></script>
+
+  <!-- Dynamic Favicon Switcher Based on Theme -->
+  <script>
+    const updateFavicon = (theme) => {
+      const favicon = document.getElementById('favicon');
+      if (theme === 'dark') {
+        favicon.href = '/lightlogo.png';
+      } else {
+        favicon.href = '/darklogo.png';
+      }
+    };
+
+    const match = window.matchMedia('(prefers-color-scheme: dark)');
+    updateFavicon(match.matches ? 'dark' : 'light');
+    match.addEventListener('change', (e) => updateFavicon(e.matches ? 'dark' : 'light'));
+  </script>
 </body>
 
 </html>
