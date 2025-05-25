@@ -1,8 +1,6 @@
 <h1 align="center">🌐 TechQuanta Community Website</h1>
 
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/000000/placeholder-banner.png" alt="TechQuanta Banner" width="80%" />
-</p>
+
 
 <p align="center">
   🚀 A fully open-source, developer-focused platform for collaboration, learning, and innovation. <br/>
