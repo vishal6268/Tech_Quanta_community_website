@@ -47,16 +47,16 @@ useEffect(() => {
   }, []);
 
   const volunteers = [
-    { id: 1, name: "Alice Johnson", role: "Frontend Developer",image:"memoji.webp" },
-    { id: 2, name: "Bob Smith", role: "Backend Engineer",image:"memoji.webp"  },
-    { id: 3, name: "Carol Davis", role: "UI/UX Designer",image:"memoji.webp"  },
-    { id: 4, name: "David Wilson", role: "Product Manager",image:"memoji.webp"  },
-    { id: 5, name: "Eva Brown", role: "Data Scientist",image:"memoji.webp"  },
-    { id: 6, name: "Frank Miller", role: "DevOps Engineer",image:"memoji.webp"  },
-    { id: 7, name: "Grace Lee", role: "QA Engineer",image:"memoji.webp"  },
-    { id: 8, name: "Henry Taylor", role: "Marketing Lead",image:"memoji.webp" },
-    { id: 9, name: "Iris Chen", role: "Content Writer",image:"memoji.webp"  },
-    { id: 10, name: "Jack Roberts", role: "Sales Manager",image:"memoji.webp"  },
+    { id: 1, name: "", role: "Frontend Developer",image:"memoji.webp" },
+    { id: 2, name: "Karan Kose", role: "MERN/React Native Developer",image:"/profiles/karankose.webp"  },
+    { id: 3, name: "Vishal Chourdhary", role: "Java Developer",image:"/profiles/choudharyvishal.png"  },
+    { id: 4, name: "Agrim Jain", role: "Data Scientist",image:"/profiles/jainagrim.webp"  },
+    { id: 5, name: "Arsh Choudhary", role: "Full Stack Engineer",image:"/profiles/choudharyarsh.webp"  },
+    { id: 6, name: "Jayesh Tapadiya", role: "Full Stack Developer",image:"/profiles/tapadiyajayesh.webp"  },
+    { id: 7, name: "Himanshu Sahu", role: "Data Scientist",image:"/profiles/sahuhimanshu.webp"  },
+    { id: 8, name: "Ashmeet Singh", role: "Data Engineer",image:"/profiles/singashmeet.webp" },
+    { id: 9, name: "Balram Dhakad", role: "Full Stack Developer",image:"/profiles/dhakadbalram.webp"  },
+    { id: 10, name: "Yashpreet Singh", role: "Management Head",image:"memoji.webp"  },
     { id: 11, name: "Karen White", role: "HR Specialist",image:"memoji.webp"  },
     { id: 12, name: "Luke Anderson", role: "Finance Lead",image:"memoji.webp"  },
     { id: 13, name: "Maya Patel", role: "Operations",image:"memoji.webp"  },
@@ -178,21 +178,13 @@ useEffect(() => {
     volunteerAvatar: {
       width: `${bubbleSize}px`,
       height: `${bubbleSize}px`,
-      borderRadius: '100%',
+      borderRadius: '30%',
       marginBottom: '10px',
       position: 'relative',
       overflow: 'hidden',
       // boxShadow: '0 10px 40px rgba(0,0,0,0.4)',
     },
-    avatarShine: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: 'radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), transparent 60%)',
-      borderRadius: '50%',
-    },
+    
     volunteerName: {
       color: theme === 'light' ? 'black' : 'white',
       fontSize: '16px',
@@ -280,7 +272,7 @@ useEffect(() => {
               ...styles.volunteerAvatar,
               backgroundImage: `url(${volunteer.image}) `,
             }}
-            className="volunteer-avatar bg-fit"
+            className="volunteer-avatar "
           >
             <div style={styles.avatarShine}></div>
           </div>

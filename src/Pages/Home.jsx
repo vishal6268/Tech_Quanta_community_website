@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { HoverBorderGradient } from './../components/ui/hover-border-gradient';
 import CoreTeam from "../components/LandingPage/CoreTeam";
-import Volunteers from "../components/LandingPage/Volunteer";
+// import Volunteers from "../components/LandingPage/Volunteer";
 import { HeroHighlight } from "../components/ui/hero-highlight";
 import { AnimatedTestimonials } from "../components/ui/animated-testimonials";
 
@@ -126,9 +126,9 @@ const Home = () => {
          <div className="flex justify-center items-center h-full w-full px-4 py-5 pt-0">
         <CoreTeam />
       </div>
-       <div className="flex justify-center items-center h-full w-screen py-5 pt-0">
+       {/* <div className="flex justify-center items-center h-full w-screen py-5 pt-0">
         <Volunteers />
-      </div>
+      </div> */}
        <div className="flex justify-center flex-col items-center h-full w-full px-4 py-5 pt-0">
       <HeroHighlight>
           <span className="text-black dark:text-white  font-mono text-7xl text-center mb-5">Community Partners</span>

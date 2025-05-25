@@ -179,7 +179,7 @@ if (error)
       placeholder="Search users..."
       value={search}
       onChange={(e) => setSearch(e.target.value)}
-      className="w-full pl-[60px] pr-4 py-2 rounded-full bg-black dark:bg-white text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#2ECC71] transition"
+      className="w-full pl-[60px] pr-4 py-2 rounded-full bg-black  dark:bg-white text-gray-900 dark:text-black  placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#2ECC71] transition"
     />
   </div>
 
