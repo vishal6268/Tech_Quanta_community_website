@@ -96,7 +96,7 @@ const Footer = () => {
             </span>
         </div>
          <div className="text-center text-xs mt-6 text-gray-500">
-        © 2025 Tech Quanta. All rights reserved.
+        &copy; {new Date().getFullYear()} TechQuanta. <span>Join the Revolution for Making Contribution..</span> 
       </div>
         <div className="flex gap-4 text-xl">
           {socialIcons.map(({ icon, href }, idx) => (
